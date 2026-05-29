@@ -1,0 +1,3200 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gas Sablon - Dashboard Keuangan & Inventaris</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      /* Sembunyikan elemen dashboard secara total saat mencetak kertas A4 */
+      @media print {
+        body {
+          background: #ffffff;
+          color: #000000;
+          margin: 0;
+          padding: 0;
+        }
+        #sidebar,
+        #sidebar-overlay,
+        header,
+        main,
+        #global-modal,
+        #gas-production-warning {
+          display: none !important;
+        }
+        .printable-area {
+          display: block !important;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 210mm; /* Lebar Standard A4 */
+          height: 297mm; /* Tinggi Standard A4 */
+          margin: 0;
+          padding: 10mm;
+          box-sizing: border-box;
+        }
+        /* Desain Grid Kotak Potong Hitam Tebal Sesuai Gambar Sketsa */
+        .print-grid-table {
+          width: 100%;
+          height: 275mm; /* Mengisi tinggi printable area kertas A4 */
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+        .print-grid-table tr {
+          height: 27.5mm; /* Membagi rata tinggi kertas untuk 10 baris */
+        }
+        .print-grid-table td {
+          border: 3px solid #000000 !important;
+          padding: 8px 12px !important;
+          font-family: "Courier New", Courier, monospace !important;
+          font-size: 20px !important;
+          font-weight: 900 !important;
+          text-transform: uppercase !important;
+          vertical-align: middle !important;
+          word-wrap: break-word;
+          overflow: hidden;
+        }
+        .col-print-nama {
+          width: 33.33% !important; /* Lebar Nama 1/3 */
+        }
+        .col-print-resi {
+          width: 66.66% !important; /* Lebar Resi 2/3 */
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    <!-- WARNING BAR JIKA BERJALAN DI LUAR LINGKUNGAN GOOGLE APPS SCRIPT -->
+    <div
+      id="gas-production-warning"
+      class="hidden bg-amber-600 text-white px-4 py-2.5 text-center text-xs font-bold z-50 flex items-center justify-center gap-2"
+    >
+      <i class="fa-solid fa-triangle-exclamation animate-bounce"></i>
+      <span id="warning-bar-text"
+        >Aplikasi berjalan di luar Google Drive (Mode Simulasi). Silakan
+        konfigurasikan GAS_URL di file index.html untuk deployment Netlify
+        Anda.</span
+      >
+    </div>
+
+    <!-- SKRIN LOG MASUK -->
+    <div
+      id="login-screen"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 px-4"
+    >
+      <div
+        class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100 text-center"
+      >
+        <!-- LOGO DINAMIK -->
+        <div
+          id="login-logo-container"
+          class="inline-flex p-3 bg-blue-100 text-blue-600 rounded-xl mb-3 h-16 w-16 items-center justify-center overflow-hidden"
+        >
+          <i class="fa-solid fa-shirt fa-2x"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900" id="login-app-name">
+          Gas Sablon App
+        </h1>
+        <p class="text-slate-500 text-sm mt-1 mb-8">
+          Sistem Manajemen Keuangan & Inventaris
+        </p>
+
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="mb-4 text-left">
+            <label
+              class="block text-slate-700 text-sm font-semibold mb-2"
+              for="username"
+              >Nama Pengguna</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+              >
+                <i class="fa-solid fa-user"></i>
+              </span>
+              <input
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                id="username"
+                type="text"
+                placeholder="Masukkan nama pengguna"
+                required
+                autocomplete="username"
+              />
+            </div>
+          </div>
+          <div class="mb-6 text-left">
+            <label
+              class="block text-slate-700 text-sm font-semibold mb-2"
+              for="password"
+              >Kata Sandi</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+              >
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                required
+                autocomplete="current-password"
+              />
+            </div>
+          </div>
+          <button
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-200 text-sm flex items-center justify-center gap-2"
+            type="submit"
+          >
+            <span>Masuk Aplikasi</span>
+            <i class="fa-solid fa-right-to-bracket"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- UTAMA SISTEM WRAPPER -->
+    <div
+      id="main-app"
+      class="hidden flex flex-col md:flex-row min-h-screen flex-1"
+    >
+      <!-- NAVIGASI SIDEBAR -->
+      <aside
+        id="sidebar"
+        class="bg-slate-900 text-slate-300 w-full md:w-64 flex-shrink-0 flex flex-col transition-all duration-300 z-40 fixed md:relative h-screen -translate-x-full md:translate-x-0"
+      >
+        <div
+          class="p-5 border-b border-slate-800 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              id="sidebar-logo-container"
+              class="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center overflow-hidden text-white flex-shrink-0"
+            >
+              <i class="fa-solid fa-shirt"></i>
+            </div>
+            <div>
+              <h2
+                class="font-bold text-white text-base leading-tight"
+                id="sidebar-app-name"
+              >
+                Gas Sablon
+              </h2>
+              <span class="text-xs text-slate-400" id="user-display-role"
+                >Admin</span
+              >
+            </div>
+          </div>
+          <button
+            onclick="toggleSidebar()"
+            class="md:hidden text-slate-400 hover:text-white"
+          >
+            <i class="fa-solid fa-xmark fa-lg"></i>
+          </button>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+          <button
+            onclick="switchView('overview')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
+            data-view="overview"
+          >
+            <i class="fa-solid fa-chart-pie w-5"></i>
+            <span>Ringkasan Dashboard</span>
+          </button>
+
+          <!-- Seksyen Aliran Kas -->
+          <div class="pt-4 pb-1 admin-only">
+            <span
+              class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
+              >Keuangan</span
+            >
+          </div>
+          <button
+            onclick="switchView('keuangan-transaksi')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            data-view="keuangan-transaksi"
+          >
+            <i class="fa-solid fa-wallet w-5"></i>
+            <span>Catatan Kas (Harian)</span>
+          </button>
+          <button
+            onclick="switchView('keuangan-utangpiutang')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            data-view="keuangan-utangpiutang"
+          >
+            <i class="fa-solid fa-hand-holding-dollar w-5"></i>
+            <span>Utang & Piutang</span>
+          </button>
+          <button
+            onclick="switchView('keuangan-recurring')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            data-view="keuangan-recurring"
+          >
+            <i class="fa-solid fa-repeat w-5"></i>
+            <span>Kas Tetap (Berulang)</span>
+          </button>
+
+          <!-- Seksyen Operasi & Cetak Label -->
+          <div class="pt-4 pb-1">
+            <span
+              class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
+              >Operasional & Produksi</span
+            >
+          </div>
+          <!-- MENU UTAMA: RESI MANUAL A4 -->
+          <button
+            onclick="switchView('cetak-resi')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
+            data-view="cetak-resi"
+          >
+            <i class="fa-solid fa-file-invoice w-5"></i>
+            <span class="font-bold text-amber-400">Label Nama & Resi (A4)</span>
+          </button>
+
+          <!-- Seksyen Inventori -->
+          <div class="pt-4 pb-1">
+            <span
+              class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
+              >Inventoris</span
+            >
+          </div>
+          <button
+            onclick="switchView('inventaris-katalog')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
+            data-view="inventaris-katalog"
+          >
+            <i class="fa-solid fa-boxes-stacked w-5"></i>
+            <span>Katalog Master</span>
+          </button>
+          <button
+            onclick="switchView('inventaris-mutasi')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
+            data-view="inventaris-mutasi"
+          >
+            <i class="fa-solid fa-right-left w-5"></i>
+            <span>Mutasi Stok</span>
+          </button>
+
+          <!-- Kategori Dinamik Seksyen -->
+          <div class="pt-4 pb-1 admin-only">
+            <span
+              class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
+              >Kategori Dinamik</span
+            >
+          </div>
+          <button
+            onclick="switchView('kategori-keuangan')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            data-view="kategori-keuangan"
+          >
+            <i class="fa-solid fa-tags w-5"></i>
+            <span>Kategori Keuangan</span>
+          </button>
+          <button
+            onclick="switchView('kategori-inventaris')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            data-view="kategori-inventaris"
+          >
+            <i class="fa-solid fa-folder-open w-5"></i>
+            <span>Kategori Inventoris</span>
+          </button>
+
+          <!-- Tetapan Seksyen -->
+          <div class="pt-4 pb-1 admin-only">
+            <span
+              class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
+              >Sistem</span
+            >
+          </div>
+          <button
+            onclick="switchView('pengaturan')"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            data-view="pengaturan"
+          >
+            <i class="fa-solid fa-gears w-5"></i>
+            <span>Pengaturan Aplikasi</span>
+          </button>
+        </nav>
+
+        <!-- Profil Pengguna Sesi -->
+        <div
+          class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col gap-2"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
+              id="user-avatar"
+            >
+              A
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-sm font-semibold text-white truncate"
+                id="user-display-name"
+              >
+                Admin Sablon
+              </p>
+              <p
+                class="text-xs text-slate-500 truncate"
+                id="user-display-username"
+              >
+                @admin
+              </p>
+            </div>
+          </div>
+          <button
+            onclick="handleLogout()"
+            class="w-full mt-2 bg-slate-800 hover:bg-red-900 hover:text-white text-slate-400 text-xs py-2 px-3 rounded-lg transition duration-150 flex items-center justify-center gap-2"
+          >
+            <i class="fa-solid fa-power-off"></i>
+            <span>Log Keluar</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- BACKDROP SIDEBAR PADA MOBILE -->
+      <div
+        id="sidebar-overlay"
+        onclick="toggleSidebar()"
+        class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 md:hidden"
+      ></div>
+
+      <!-- KAWASAN KANDUNGAN UTAMA -->
+      <main class="flex-1 flex flex-col h-screen overflow-y-auto">
+        <!-- Mobile Header Bar -->
+        <header
+          class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between md:hidden flex-shrink-0"
+        >
+          <div class="flex items-center gap-3">
+            <button
+              onclick="toggleSidebar()"
+              class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+            >
+              <i class="fa-solid fa-bars fa-lg"></i>
+            </button>
+            <div
+              id="header-logo-container"
+              class="h-8 w-8 bg-blue-600 rounded-md flex items-center justify-center overflow-hidden text-white flex-shrink-0"
+            >
+              <i class="fa-solid fa-shirt text-sm"></i>
+            </div>
+            <span class="font-bold text-slate-800" id="header-app-name"
+              >Gas Sablon</span
+            >
+          </div>
+          <div
+            class="text-xs px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full font-semibold"
+            id="header-user-role"
+          >
+            Admin
+          </div>
+        </header>
+
+        <!-- KAWASAN PANEL KANDUNGAN -->
+        <div class="p-4 md:p-8 flex-1">
+          <!-- VIEW 1: OVERVIEW DASHBOARD -->
+          <div id="view-overview" class="view-panel space-y-6">
+            <div
+              class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Ringkasan Operasi Bengkel
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5" id="overview-welcome">
+                  Pantau aliran tunai kewangan dan sediaan bahan mentah sablon
+                  anda.
+                </p>
+              </div>
+              <div
+                class="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 self-start shadow-sm text-sm"
+              >
+                <i class="fa-regular fa-calendar text-blue-600"></i>
+                <span
+                  class="font-medium text-slate-700"
+                  id="current-date-display"
+                  >28 Mei 2026</span
+                >
+              </div>
+            </div>
+
+            <!-- STATS CARDS GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div
+                class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-lg"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-blue-100 text-xs font-semibold tracking-wider uppercase"
+                    >
+                      Untung Bersih
+                    </p>
+                    <h3 class="text-2xl font-black mt-2" id="stat-laba-bersih">
+                      Rp 0
+                    </h3>
+                  </div>
+                  <span class="p-3 bg-white/10 rounded-xl">
+                    <i class="fa-solid fa-chart-line"></i>
+                  </span>
+                </div>
+                <div
+                  class="mt-4 flex items-center gap-2 text-xs text-blue-100 bg-white/5 p-2 rounded-lg"
+                >
+                  <span class="font-bold" id="stat-cashflow-status"
+                    >Aliran kas sihat</span
+                  >
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-slate-400 text-xs font-semibold tracking-wider uppercase"
+                    >
+                      Jumlah Penerimaan
+                    </p>
+                    <h3
+                      class="text-2xl font-bold text-slate-800 mt-2"
+                      id="stat-pemasukan"
+                    >
+                      Rp 0
+                    </h3>
+                  </div>
+                  <span class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                  </span>
+                </div>
+                <div class="mt-4 text-xs text-emerald-600">
+                  Berdasarkan rekod aliran tunai masuk.
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-slate-400 text-xs font-semibold tracking-wider uppercase"
+                    >
+                      Jumlah Perbelanjaan
+                    </p>
+                    <h3
+                      class="text-2xl font-bold text-slate-800 mt-2"
+                      id="stat-pengeluaran"
+                    >
+                      Rp 0
+                    </h3>
+                  </div>
+                  <span class="p-3 bg-rose-50 text-rose-600 rounded-xl">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                  </span>
+                </div>
+                <div class="mt-4 text-xs text-rose-600">
+                  Termasuk perbelanjaan tetap berulang.
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-slate-400 text-xs font-semibold tracking-wider uppercase"
+                    >
+                      Bahan Mentah Kritikal
+                    </p>
+                    <h3
+                      class="text-2xl font-bold text-slate-800 mt-2"
+                      id="stat-stok-kritis"
+                    >
+                      0 Item
+                    </h3>
+                  </div>
+                  <span
+                    class="p-3 bg-amber-50 text-amber-600 rounded-xl"
+                    id="stok-kritis-icon-bg"
+                  >
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                  </span>
+                </div>
+                <div
+                  class="mt-4 text-xs text-amber-600 font-medium"
+                  id="stat-stok-kritis-desc"
+                >
+                  Sediaan selamat di atas stok minimum.
+                </div>
+              </div>
+            </div>
+
+            <!-- GRAPHS & CRITICAL STOCK -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <h4 class="font-bold text-slate-800">
+                    Carta Trend Kas Bulanan
+                  </h4>
+                  <span class="text-xs text-slate-400">Tahun 2026</span>
+                </div>
+                <div class="relative h-64 md:h-72 w-full">
+                  <canvas id="chart-cashflow"></canvas>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col"
+              >
+                <div class="mb-4">
+                  <h4 class="font-bold text-slate-800">
+                    Sediaan Stok Kritikal
+                  </h4>
+                  <p class="text-xs text-slate-400">
+                    Sila hubungi pembekal jika stok menyentuh had minimum.
+                  </p>
+                </div>
+                <div
+                  class="flex-1 overflow-y-auto max-h-72 space-y-3 pr-1"
+                  id="kritis-list-container"
+                >
+                  <div class="text-center py-8 text-slate-400 text-sm">
+                    <i
+                      class="fa-solid fa-circle-check text-emerald-500 fa-2x mb-2 block"
+                    ></i>
+                    Semua sediaan selamat.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 2: MODUL KEWANGAN (TRANSAKSI KAS) -->
+          <div id="view-keuangan-transaksi" class="view-panel space-y-6 hidden">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Catatan Keuangan Harian
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Rekod semua urus niaga modal, pembelian bahan sablon, utiliti
+                  bengkel, mahupun pendapatan maklon sablon.
+                </p>
+              </div>
+              <button
+                onclick="openKeuanganModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Rekod Aliran Kas Baru</span>
+              </button>
+            </div>
+
+            <!-- CARIAN & FILTER -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterKeuanganTable()"
+                  id="search-keuangan"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari keterangan transaksi..."
+                />
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <select
+                  onchange="filterKeuanganTable()"
+                  id="filter-tipe-keuangan"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <option value="Semua">Semua Jenis</option>
+                  <option value="Pemasukan">Penerimaan (+)</option>
+                  <option value="Pengeluaran">Perbelanjaan (-)</option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">Tarikh</th>
+                      <th class="py-4 px-6">Jenis</th>
+                      <th class="py-4 px-6">Kategori</th>
+                      <th class="py-4 px-6">Keterangan</th>
+                      <th class="py-4 px-6">Nominal</th>
+                      <th class="py-4 px-6 text-center">Petugas</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="keuangan-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 3: HUTANG & PIUTANG -->
+          <div
+            id="view-keuangan-utangpiutang"
+            class="view-panel space-y-6 hidden"
+          >
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Urusan Hutang & Piutang
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Pantau baki hutang bahan mentah kepada pembekal dan baki
+                  piutang/deposit daripada pelanggan.
+                </p>
+              </div>
+              <button
+                onclick="openUtangPiutangModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Catat Hutang / Piutang</span>
+              </button>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">Tarikh</th>
+                      <th class="py-4 px-6">Jenis</th>
+                      <th class="py-4 px-6">Pihak Berkenaan</th>
+                      <th class="py-4 px-6">Keterangan</th>
+                      <th class="py-4 px-6">Jumlah</th>
+                      <th class="py-4 px-6">Status</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="utangpiutang-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 4: RECURRING TRANSACTIONS -->
+          <div id="view-keuangan-recurring" class="view-panel space-y-6 hidden">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Penerimaan & Perbelanjaan Berulang (Recurring)
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Daftarkan kontrak pembayaran tetap bulanan seperti sewa
+                  bengkel, ansuran mesin, atau bil internet workshop.
+                </p>
+              </div>
+              <button
+                onclick="openRecurringModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Daftar Kontrak Berulang</span>
+              </button>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">Jenis</th>
+                      <th class="py-4 px-6">Kategori</th>
+                      <th class="py-4 px-6">Keterangan</th>
+                      <th class="py-4 px-6">Jumlah</th>
+                      <th class="py-4 px-6">Kerapuhan (Frekuensi)</th>
+                      <th class="py-4 px-6">Status</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="recurring-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 5: MANAJEMEN LABEL RESI MANUAL A4 -->
+          <div id="view-cetak-resi" class="view-panel space-y-6 hidden">
+            <div
+              class="flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Pencetakan Label Tempel (Kertas A4)
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Kelola lembaran label pengiriman/produksi. Input langsung di
+                  bawah untuk mempercepat pengerjaan tanpa pop-up.
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <!-- TOMBOL UNTUK MENGHAPUS SEMUA BARIS DATA (RESET INSTAN) -->
+                <button
+                  onclick="bulkDeleteAllResi()"
+                  class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-extrabold text-xs py-2.5 px-4 rounded-xl flex items-center gap-2 transition shadow-xs"
+                >
+                  <i class="fa-solid fa-trash-can"></i>
+                  <span>Kosongkan Lembar</span>
+                </button>
+                <!-- TOMBOL UNDUH SELURUHNYA (1 BATCH INSTAN A4 PNG) -->
+                <button
+                  onclick="downloadFullSheet()"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs py-2.5 px-4 rounded-xl flex items-center gap-2 transition shadow-md"
+                >
+                  <i class="fa-solid fa-download"></i>
+                  <span>Unduh Gambar Sheet (A4)</span>
+                </button>
+                <!-- TOMBOL CETAK SELURUHNYA (1 BATCH INSTAN A4) -->
+                <button
+                  onclick="cetakResiA4Direct()"
+                  class="bg-slate-900 hover:bg-slate-950 text-white font-extrabold text-xs py-2.5 px-5 rounded-xl flex items-center gap-2 transition shadow-md"
+                >
+                  <i class="fa-solid fa-print"></i>
+                  <span>Cetak Kertas A4 (10 Baris)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- SIMULASI LEMBAR KERJA A4 (10 BARIS GRID) PADA SCREEN -->
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-md p-6 max-w-4xl mx-auto"
+            >
+              <div
+                class="border-b border-slate-100 pb-4 mb-4 flex justify-between items-center text-xs"
+              >
+                <span
+                  class="text-slate-400 font-bold tracking-wider uppercase flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-circle-info text-blue-500"></i>
+                  Ketik Langsung di Kolom Bawah (Kiri: Nama 1/3, Kanan: Resi
+                  2/3). Tekan Tab untuk Pindah Baris.
+                </span>
+                <span
+                  class="bg-blue-100 text-blue-800 font-bold px-2.5 py-1 rounded-full text-[10px]"
+                  id="screen-sheet-counter"
+                  >0 / 10 Terisi</span
+                >
+              </div>
+
+              <!-- REPRESENTASI GRID KERTAS A4 -->
+              <div class="border-4 border-slate-900 rounded-lg overflow-hidden">
+                <div
+                  class="grid grid-cols-12 bg-slate-200 border-b-4 border-slate-900 font-black text-xs text-slate-800 text-center"
+                >
+                  <div class="col-span-1 py-3 border-r-4 border-slate-900">
+                    BARIS
+                  </div>
+                  <div class="col-span-4 py-3 border-r-4 border-slate-900">
+                    NAMA (LEBAR 1/3)
+                  </div>
+                  <div class="col-span-7 py-3">RESI (LEBAR 2/3)</div>
+                </div>
+
+                <div
+                  class="divide-y-4 divide-slate-900"
+                  id="screen-resi-grid-body"
+                >
+                  <!-- Generated secara dinamis tepat 10 baris input langsung oleh JavaScript -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 6: INVENTARIS KATALOG -->
+          <div id="view-inventaris-katalog" class="view-panel space-y-6 hidden">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Katalog Induk Inventori
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Urus maklumat kain (Combed/Carded), sediaan warna dakwat, dan
+                  alatan sablon.
+                </p>
+              </div>
+              <button
+                onclick="openBarangModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Daftar Barang Baru</span>
+              </button>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">ID Barang</th>
+                      <th class="py-4 px-6">Nama Sediaan</th>
+                      <th class="py-4 px-6">Kategori</th>
+                      <th class="py-4 px-6 text-center">Had Minimum</th>
+                      <th class="py-4 px-6 text-center">Stok Semasa</th>
+                      <th class="py-4 px-6">Status Sediaan</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="barang-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 7: MUTASI STOK -->
+          <div id="view-inventaris-mutasi" class="view-panel space-y-6 hidden">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Rekod Aliran Mutasi Stok
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Catat rekod stok masuk (pembekal), stok keluar (proses
+                  produksi), atau stok rosak (cacat cetakan).
+                </p>
+              </div>
+              <button
+                onclick="openMutasiModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-right-left"></i>
+                <span>Catat Mutasi Stok</span>
+              </button>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">Tarikh</th>
+                      <th class="py-4 px-6">Barang</th>
+                      <th class="py-4 px-6">Jenis Aliran</th>
+                      <th class="py-4 px-6 text-center">Kuantiti</th>
+                      <th class="py-4 px-6">Sebab / Projek</th>
+                      <th class="py-4 px-6 text-center">Petugas</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="mutasi-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 8: KATEGORI KEUANGAN -->
+          <div id="view-kategori-keuangan" class="view-panel space-y-6 hidden">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Pengurusan Kategori Kewangan
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Urus senarai kategori kemasukan/pengeluaran dinamik untuk
+                  dropdown form.
+                </p>
+              </div>
+              <button
+                onclick="openKategoriKeuanganModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Kategori Baru</span>
+              </button>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">Nama Kategori</th>
+                      <th class="py-4 px-6">Default Aliran</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="kat-keuangan-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 9: KATEGORI INVENTARIS -->
+          <div
+            id="view-kategori-inventaris"
+            class="view-panel space-y-6 hidden"
+          >
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-slate-900">
+                  Pengurusan Kategori Inventori
+                </h1>
+                <p class="text-slate-500 text-sm mt-0.5">
+                  Klasifikasikan barangan bengkel anda (Bahan Mentah, Alatan
+                  Sablon, Pembungkusan).
+                </p>
+              </div>
+              <button
+                onclick="openKategoriInventarisModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Kategori Baru</span>
+              </button>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead
+                    class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
+                  >
+                    <tr>
+                      <th class="py-4 px-6">Nama Kategori Inventori</th>
+                      <th class="py-4 px-6 text-right">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="kat-inventaris-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 10: TETAPAN (ADMIN ONLY) -->
+          <div
+            id="view-pengaturan"
+            class="view-panel space-y-6 hidden admin-only"
+          >
+            <div>
+              <h1 class="text-2xl font-bold text-slate-900">
+                Konfigurasi Pengaturan Aplikasi
+              </h1>
+              <p class="text-slate-500 text-sm mt-0.5">
+                Suaikan identiti bengkel, letakkan kustom logo, dan tukar kata
+                lauuan pengguna sistem.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Profil Bengkel -->
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+              >
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-store text-blue-600"></i>
+                  Profil Studio Konveksi
+                </h3>
+                <form
+                  id="settings-company-form"
+                  onsubmit="saveCompanySettings(event)"
+                  class="space-y-4"
+                >
+                  <div>
+                    <label
+                      class="block text-slate-700 text-xs font-semibold mb-1"
+                      >Nama Studio / Bengkel</label
+                    >
+                    <input
+                      id="settings-app-name"
+                      type="text"
+                      class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-slate-700 text-xs font-semibold mb-1"
+                      >Alamat Fizikal Bengkel</label
+                    >
+                    <textarea
+                      id="settings-app-address"
+                      class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                      required
+                    ></textarea>
+                  </div>
+                  <div>
+                    <label
+                      class="block text-slate-700 text-xs font-semibold mb-1"
+                      >URL Gambar Logo Aplikasi (Kustom Logo)</label
+                    >
+                    <input
+                      id="settings-app-logo-url"
+                      type="url"
+                      class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="https://domain.com/logo.png"
+                    />
+                    <p class="text-[10px] text-slate-400 mt-1">
+                      Biarkan kosong jika ingin menggunakan logo default sistem.
+                    </p>
+                  </div>
+                  <button
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg transition"
+                  >
+                    Simpan Perubahan
+                  </button>
+                </form>
+              </div>
+
+              <!-- Kelola Kredensial User -->
+              <div
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+              >
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                  <i class="fa-solid fa-user-lock text-blue-600"></i>
+                  Tukar Kata Laluan
+                </h3>
+
+                <div class="space-y-4">
+                  <!-- Update Admin -->
+                  <div
+                    class="p-4 bg-slate-50 rounded-xl border border-slate-100"
+                  >
+                    <h4
+                      class="font-bold text-xs text-slate-700 mb-2 uppercase tracking-wide"
+                    >
+                      Akaun Administrator
+                    </h4>
+                    <form
+                      onsubmit="updateUserCredentials(event, 'admin')"
+                      class="grid grid-cols-2 gap-3"
+                    >
+                      <div class="col-span-2">
+                        <label
+                          class="block text-slate-600 text-[10px] font-semibold mb-1"
+                          >Nama Penuh</label
+                        >
+                        <input
+                          id="cred-admin-nama"
+                          type="text"
+                          class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label
+                          class="block text-slate-600 text-[10px] font-semibold mb-1"
+                          >Nama Pengguna</label
+                        >
+                        <input
+                          id="cred-admin-user"
+                          type="text"
+                          class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs"
+                          readonly
+                        />
+                      </div>
+                      <div>
+                        <label
+                          class="block text-slate-600 text-[10px] font-semibold mb-1"
+                          >Kata Laluan Baru</label
+                        >
+                        <input
+                          id="cred-admin-pass"
+                          type="password"
+                          placeholder="Min. 4 Karakter"
+                          class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div class="col-span-2 text-right">
+                        <button
+                          type="submit"
+                          class="bg-slate-800 hover:bg-blue-700 text-white font-semibold text-[10px] py-1.5 px-3 rounded-lg transition"
+                        >
+                          Simpan Kredensial Admin
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- PRINT VIEW WRAPPER FOR A4 PAPER OUTPUT -->
+    <div id="a4-print-area" class="hidden printable-area bg-white text-black">
+      <table class="print-grid-table">
+        <tbody id="print-grid-tbody">
+          <!-- Tepat 10 baris diisi secara dinamis oleh JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MODAL DINAMIK GLOBAL -->
+    <div
+      id="global-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+    >
+      <div
+        id="modal-card"
+        class="bg-white rounded-2xl shadow-xl w-full max-w-lg border border-slate-100 overflow-hidden transform transition-all scale-95 duration-200"
+      >
+        <div
+          class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between"
+        >
+          <h3 id="modal-title" class="font-bold text-slate-800 text-lg">
+            Tajuk Borang
+          </h3>
+          <button
+            onclick="closeModal()"
+            class="text-slate-400 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-xmark fa-lg"></i>
+          </button>
+        </div>
+        <form
+          id="modal-form"
+          onsubmit="handleFormSubmit(event)"
+          class="p-6 space-y-4"
+        >
+          <input type="hidden" id="form-action-type" />
+          <input type="hidden" id="form-edit-id" />
+
+          <div id="modal-form-fields" class="space-y-4"></div>
+
+          <div
+            class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3"
+          >
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm py-2 px-4 rounded-lg transition"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-4 rounded-lg transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Simpan Rekod</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- CLIENT SIDE CODE ENGINE FOR ENGINE STORAGE -->
+    <script>
+      // ==========================================
+      // KONFIGURASI HOSTING NETLIFY (GAS BACKEND)
+      // ==========================================
+      // MASUKKAN URL WEB APP ANDA YANG DIDAPATKAN SETELAH PROSES DEPLOY DI GOOGLE APPS SCRIPT
+      const GAS_URL =
+        "https://script.google.com/macros/s/AKfycbzFg9a6iMyVV6l1RSY3cakYhsN-rZx9XATtbanigGZIzbLM_U7CyeGkE6UqK1PyjT7k/exec";
+
+      // --- SISTEM VARIABEL MEMORY UNTUK OPTIMISTIC STATE MUTATION ---
+      let stateUsers = [];
+      let stateKatKeuangan = [];
+      let stateKatInventaris = [];
+      let stateKeuangan = [];
+      let stateUtangPiutang = [];
+      let stateRecurring = [];
+      let stateBarang = [];
+      let stateMutasi = [];
+      let stateCompany = {};
+      let stateResiManual = [];
+
+      let currentView = "overview";
+      let currentUser = null;
+
+      // Sinkronisasi Seluruh Data dari Database Aktif (Google Sheets)
+      function syncInMemoryState(fetchedData) {
+        if (fetchedData) {
+          stateUsers = fetchedData.users || [];
+          stateKatKeuangan = fetchedData.kat_keuangan || [];
+          stateKatInventaris = fetchedData.kat_inventaris || [];
+          stateKeuangan = fetchedData.keuangan || [];
+          stateUtangPiutang = fetchedData.utang_piutang || [];
+          stateRecurring = fetchedData.recurring || [];
+          stateBarang = fetchedData.barang || [];
+          stateMutasi = fetchedData.mutasi || [];
+          stateCompany = fetchedData.company || {};
+          stateResiManual = fetchedData.resi_manual || [];
+        }
+      }
+
+      // Memetakan kunci nama ke variabel state internal
+      function getDataFromStateVariable(key) {
+        if (key === "keuangan") return stateKeuangan;
+        if (key === "utang_piutang") return stateUtangPiutang;
+        if (key === "recurring") return stateRecurring;
+        if (key === "barang") return stateBarang;
+        if (key === "mutasi") return stateMutasi;
+        if (key === "kat_keuangan") return stateKatKeuangan;
+        if (key === "kat_inventaris") return stateKatInventaris;
+        if (key === "resi_manual") return stateResiManual;
+        if (key === "company") return stateCompany;
+        if (key === "users") return stateUsers;
+        return [];
+      }
+
+      // Mengembalikan state ketika dibatalkan (rollback)
+      function restoreStateVariable(key, previousState) {
+        if (key === "keuangan") stateKeuangan = previousState || [];
+        if (key === "utang_piutang") stateUtangPiutang = previousState || [];
+        if (key === "recurring") stateRecurring = previousState || [];
+        if (key === "barang") stateBarang = previousState || [];
+        if (key === "mutasi") stateMutasi = previousState || [];
+        if (key === "kat_keuangan") stateKatKeuangan = previousState || [];
+        if (key === "kat_inventaris") stateKatInventaris = previousState || [];
+        if (key === "resi_manual") stateResiManual = previousState || [];
+        if (key === "company") stateCompany = previousState || {};
+        if (key === "users") stateUsers = previousState || [];
+      }
+
+      /**
+       * UNIFIED API GATEWAY WRAPPER (BRIDGE GOOGLE APPS SCRIPT)
+       * Mendukung multi-environment secara dinamis:
+       * 1. Netlify Production (HTTP POST Fetch ke GAS_URL)
+       * 2. Native Google Apps Script (Serves inside GAS iframe)
+       * 3. Local/Canvas Preview (Simulated dummy database)
+       */
+      async function callGAS(action, data = {}) {
+        const hasValidUrl =
+          GAS_URL &&
+          GAS_URL !== "URL_WEB_APP_GAS_ANDA" &&
+          GAS_URL.startsWith("http");
+
+        if (hasValidUrl) {
+          // METODE A: Fetch API Eksternal untuk Deployment Netlify
+          try {
+            const response = await fetch(GAS_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "text/plain", // Sederhana untuk mencegah CORS preflight OPTIONS request
+              },
+              body: JSON.stringify({ action, ...data }),
+            });
+            if (!response.ok)
+              throw new Error(
+                "Server Apps Script memberikan respons HTTP " + response.status,
+              );
+            const resJson = await response.json();
+            if (!resJson.success && resJson.error)
+              throw new Error(resJson.error);
+            return resJson;
+          } catch (err) {
+            console.error("Gagal melakukan fetch ke GAS:", err);
+            throw err;
+          }
+        } else if (
+          typeof google !== "undefined" &&
+          google.script &&
+          google.script.run
+        ) {
+          // METODE B: Native Apps Script Runner (Jika dijalankan langsung di domain Google)
+          return new Promise((resolve, reject) => {
+            const run = google.script.run
+              .withSuccessHandler((res) => resolve(res))
+              .withFailureHandler((err) => reject(err));
+
+            if (action === "login") {
+              run.loginUser(data.username, data.password);
+            } else if (action === "getPayload") {
+              run.getSheetsPayload();
+            } else if (action === "saveData") {
+              run.saveDataFromClient(data.keys, data.dataValues);
+            } else {
+              reject(new Error("Aksi tidak didukung oleh native runner."));
+            }
+          });
+        } else {
+          // METODE C: Simulasi Simulatif (Untuk Pratinjau Canvas Editor)
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              if (action === "login") {
+                const foundUser = stateUsers.find(
+                  (u) =>
+                    u.username === data.username.toLowerCase() &&
+                    u.password === data.password,
+                );
+                if (foundUser) {
+                  resolve({
+                    success: true,
+                    user: {
+                      id: foundUser.id,
+                      username: foundUser.username,
+                      role: foundUser.role,
+                      nama_lengkap: foundUser.nama_lengkap,
+                    },
+                  });
+                } else {
+                  resolve({
+                    success: false,
+                    message:
+                      "Nama pengguna atau kata sandi tidak cocok! (Preview Mode)",
+                  });
+                }
+              } else if (action === "getPayload") {
+                resolve({ success: true, payload: null });
+              } else if (action === "saveData") {
+                resolve({ success: true });
+              }
+            }, 800);
+          });
+        }
+      }
+
+      // Mengecek apakah berjalan di luar Google dan URL belum dikonfigurasikan (Mode Simulasi)
+      function isLocalEnvironment() {
+        const hasGoogleRun =
+          typeof google !== "undefined" && google.script && google.script.run;
+        const hasValidUrl =
+          GAS_URL &&
+          GAS_URL !== "URL_WEB_APP_GAS_ANDA" &&
+          GAS_URL.startsWith("http");
+        return !hasGoogleRun && !hasValidUrl;
+      }
+
+      // --- SISTEM UTAMA ENGIN OPTIMISTIC CRUD & PENANGANAN GAGAL (ROLLBACK) KE GAS APPS ---
+      async function executeOptimisticAction(
+        keyArray,
+        actionFn,
+        renderFn,
+        successMsg,
+      ) {
+        const keys = Array.isArray(keyArray) ? keyArray : [keyArray];
+
+        // 1. Ambil cadangan data asli sebelum dimutasi
+        const backups = {};
+        keys.forEach((k) => {
+          backups[k] = JSON.parse(JSON.stringify(getDataFromStateVariable(k)));
+        });
+
+        // 2. State Mutation Instan pada Memory
+        actionFn();
+
+        // 3. Render Instan ke Layar Pengguna (Instan UX)
+        renderFn();
+
+        // 4. Munculkan Toast Peringatan "Sedang diproses..."
+        const toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            Swal.showLoading();
+          },
+        });
+
+        toast.fire({
+          icon: "info",
+          title: "Sedang diproses...",
+          timer: 4000,
+        });
+
+        try {
+          // 5. Kirim data nyata secara langsung melalui API Gateway callGAS
+          await callGAS("saveData", {
+            keys: keys,
+            dataValues: keys.map((k) => getDataFromStateVariable(k)),
+          });
+
+          // Tampilkan Toast Sukses
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: successMsg || "Berhasil disimpan!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (err) {
+          // 6. GAGAL: Lakukan Rollback mengembalikan data lama ke memory
+          keys.forEach((k) => {
+            restoreStateVariable(k, backups[k]);
+          });
+
+          // Render Ulang Layar dengan Data Asli yang Dipulihkan
+          renderFn();
+
+          // Tampilkan Toast Gagal & Rollback
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "error",
+            title: "Gagal diproses!",
+            text:
+              err.message ||
+              "Gangguan koneksi Google Sheets backend. Perubahan dibatalkan.",
+            showConfirmButton: false,
+            timer: 3500,
+            timerProgressBar: true,
+          });
+        }
+      }
+
+      // --- Rupiah Currency Formatting ---
+      function formatRupiah(angka) {
+        if (angka === undefined || angka === null) return "Rp 0";
+        const isNegative = angka < 0;
+        const absoluteValue = Math.abs(angka);
+        const rupiah = absoluteValue
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return (isNegative ? "-Rp " : "Rp ") + rupiah;
+      }
+
+      // --- AUTHENTICATION (REVISI PRODUKSI: MEMBUAT REQUEST NYATA KE BACKEND) ---
+      function handleLogin(event) {
+        event.preventDefault();
+        const userIn = document.getElementById("username").value.trim();
+        const passIn = document.getElementById("password").value;
+
+        // Cari tombol submit untuk memicu loading state
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalBtnContent = submitBtn.innerHTML;
+
+        // Masuk ke Loading State (Tombol Terkunci)
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Memverifikasi...</span>`;
+
+        // Hubungi API Gateway (code.gs)
+        callGAS("login", { username: userIn, password: passIn })
+          .then(function (response) {
+            // Mengembalikan tombol ke keadaan semula
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+
+            if (response.success) {
+              currentUser = response.user;
+              sessionStorage.setItem(
+                "gas_session",
+                JSON.stringify(currentUser),
+              );
+              document.getElementById("login-screen").classList.add("hidden");
+              document.getElementById("main-app").classList.remove("hidden");
+
+              // Sukses login: Ambil payload Google Sheets utuh untuk memulai dashboard
+              fetchDataAndStart();
+            } else {
+              // Tampilkan feedback penolakan spesifik dari backend
+              Swal.fire({
+                icon: "error",
+                title: "Gagal Masuk",
+                text: response.message,
+                confirmButtonColor: "#3b82f6",
+              });
+            }
+          })
+          .catch(function (err) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+            Swal.fire({
+              icon: "error",
+              title: "Kegagalan Koneksi",
+              text: "Gagal mengirimkan data ke Google Drive: " + err.message,
+              confirmButtonColor: "#ef4444",
+            });
+          });
+      }
+
+      // Mengunduh seluruh sisa lembar tabel setelah login berhasil
+      function fetchDataAndStart() {
+        if (!isLocalEnvironment()) {
+          Swal.fire({
+            title: "Memuat Data...",
+            text: "Mengunduh tabel inventaris & kas terbaru.",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          callGAS("getPayload")
+            .then(function (response) {
+              Swal.close();
+              syncInMemoryState(response.payload);
+              startApp();
+            })
+            .catch(function (err) {
+              Swal.fire({
+                icon: "error",
+                title: "Gagal Memuat",
+                text: "Kesalahan memuat spreadsheet: " + err.message,
+              });
+            });
+        } else {
+          startApp();
+        }
+      }
+
+      function handleLogout() {
+        Swal.fire({
+          title: "Apakah Anda yakin ingin keluar?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Keluar!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            sessionStorage.removeItem("gas_session");
+            currentUser = null;
+            document.getElementById("login-screen").classList.remove("hidden");
+            document.getElementById("main-app").classList.add("hidden");
+          }
+        });
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        if (sidebar.classList.contains("-translate-x-full")) {
+          sidebar.classList.remove("-translate-x-full");
+          overlay.classList.remove("hidden");
+        } else {
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        }
+      }
+
+      // --- BOOTSTRAP APP ---
+      let cashflowChart = null;
+
+      // Konfigurasi visual saat aplikasi pertama kali berjalan
+      function startApp() {
+        if (!currentUser) {
+          document.getElementById("login-screen").classList.remove("hidden");
+          document.getElementById("main-app").classList.add("hidden");
+          return;
+        }
+
+        const company = stateCompany;
+        document.getElementById("login-app-name").innerText =
+          company.app_name || "Gas Sablon App";
+        document.getElementById("sidebar-app-name").innerText =
+          company.app_name || "Gas Sablon";
+        document.getElementById("header-app-name").innerText =
+          company.app_name || "Gas Sablon";
+
+        const logoInLogin = document.getElementById("login-logo-container");
+        const logoInSidebar = document.getElementById("sidebar-logo-container");
+        const logoInHeader = document.getElementById("header-logo-container");
+
+        const defaultHanger = `<i class="fa-solid fa-shirt fa-2x"></i>`;
+        const defaultMiniHanger = `<i class="fa-solid fa-shirt"></i>`;
+
+        if (company.app_logo_url && company.app_logo_url.trim() !== "") {
+          logoInLogin.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="this.outerHTML='${defaultHanger}'">`;
+          logoInSidebar.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="this.outerHTML='${defaultMiniHanger}'">`;
+          logoInHeader.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="this.outerHTML='${defaultMiniHanger}'">`;
+        } else {
+          logoInLogin.innerHTML = defaultHanger;
+          logoInSidebar.innerHTML = defaultMiniHanger;
+          logoInHeader.innerHTML = defaultMiniHanger;
+        }
+
+        document.getElementById("user-display-name").innerText =
+          currentUser.nama_lengkap;
+        document.getElementById("user-display-username").innerText =
+          "@" + currentUser.username;
+        document.getElementById("user-display-role").innerText =
+          currentUser.role;
+        document.getElementById("header-user-role").innerText =
+          currentUser.role;
+        document.getElementById("user-avatar").innerText =
+          currentUser.nama_lengkap.charAt(0).toUpperCase();
+
+        const d = new Date();
+        const months = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+        document.getElementById("current-date-display").innerText =
+          `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+        // Hak akses Staff dibatasi ketat
+        const adminElements = document.querySelectorAll(".admin-only");
+        if (currentUser.role === "Staff") {
+          adminElements.forEach((el) => el.classList.add("hidden"));
+
+          document.querySelectorAll(".nav-btn").forEach((btn) => {
+            const view = btn.getAttribute("data-view");
+            if (
+              ![
+                "cetak-resi",
+                "inventaris-katalog",
+                "inventaris-mutasi",
+              ].includes(view)
+            ) {
+              btn.classList.add("hidden");
+            } else {
+              btn.classList.remove("hidden");
+            }
+          });
+
+          switchView("cetak-resi");
+        } else {
+          adminElements.forEach((el) => el.classList.remove("hidden"));
+          document.querySelectorAll(".nav-btn").forEach((btn) => {
+            btn.classList.remove("hidden");
+          });
+          switchView("overview");
+        }
+      }
+
+      function switchView(viewName) {
+        if (currentUser && currentUser.role === "Staff") {
+          if (
+            !["cetak-resi", "inventaris-katalog", "inventaris-mutasi"].includes(
+              viewName,
+            )
+          ) {
+            viewName = "cetak-resi";
+          }
+        }
+
+        currentView = viewName;
+        const panels = document.querySelectorAll(".view-panel");
+        panels.forEach((p) => p.classList.add("hidden"));
+
+        const navButtons = document.querySelectorAll(".nav-btn");
+        navButtons.forEach((btn) => {
+          btn.classList.remove("bg-blue-600", "text-white");
+          btn.classList.add(
+            "text-slate-300",
+            "hover:bg-slate-800",
+            "hover:text-white",
+          );
+        });
+
+        const activePanel = document.getElementById("view-" + viewName);
+        if (activePanel) activePanel.classList.remove("hidden");
+
+        const activeBtn = document.querySelector(
+          `.nav-btn[data-view="${viewName}"]`,
+        );
+        if (activeBtn) {
+          activeBtn.classList.remove(
+            "text-slate-300",
+            "hover:bg-slate-800",
+            "hover:text-white",
+          );
+          activeBtn.classList.add("bg-blue-600", "text-white");
+        }
+
+        document.getElementById("sidebar").classList.add("-translate-x-full");
+        document.getElementById("sidebar-overlay").classList.add("hidden");
+
+        if (viewName === "overview") loadOverviewData();
+        if (viewName === "keuangan-transaksi") loadKeuanganData();
+        if (viewName === "keuangan-utangpiutang") loadUtangPiutangData();
+        if (viewName === "keuangan-recurring") loadRecurringData();
+        if (viewName === "cetak-resi") loadResiManualData();
+        if (viewName === "inventaris-katalog") loadBarangData();
+        if (viewName === "inventaris-mutasi") loadMutasiData();
+        if (viewName === "kategori-keuangan") loadKategoriKeuanganData();
+        if (viewName === "kategori-inventaris") loadKategoriInventarisData();
+        if (viewName === "pengaturan") loadSettingsData();
+      }
+
+      // --- DATA LOADERS ---
+      function loadOverviewData() {
+        const keuangan = stateKeuangan;
+        const barang = stateBarang;
+
+        let totalIn = 0;
+        let totalOut = 0;
+        keuangan.forEach((item) => {
+          if (item.tipe === "Pemasukan") totalIn += Number(item.nominal || 0);
+          else totalOut += Number(item.nominal || 0);
+        });
+
+        let labaBersih = totalIn - totalOut;
+        let criticalItemsCount = 0;
+        let criticalItemsHTML = "";
+
+        barang.forEach((b) => {
+          if (Number(b.stok_sekarang || 0) <= Number(b.stok_minimum || 0)) {
+            criticalItemsCount++;
+            criticalItemsHTML += `
+                        <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-xl">
+                            <div>
+                                <h5 class="font-semibold text-slate-800 text-sm">${b.nama_barang}</h5>
+                                <span class="text-xs text-red-600 font-medium">Sediaan: ${b.stok_sekarang} (Min: ${b.stok_minimum})</span>
+                            </div>
+                            <span class="px-2 py-1 bg-red-100 text-red-800 text-[10px] font-bold rounded-lg uppercase">Kritikal</span>
+                        </div>
+                    `;
+          }
+        });
+
+        document.getElementById("stat-laba-bersih").innerText =
+          formatRupiah(labaBersih);
+        document.getElementById("stat-pemasukan").innerText =
+          formatRupiah(totalIn);
+        document.getElementById("stat-pengeluaran").innerText =
+          formatRupiah(totalOut);
+        document.getElementById("stat-stok-kritis").innerText =
+          `${criticalItemsCount} Item`;
+
+        const alertIconBg = document.getElementById("stok-kritis-icon-bg");
+        const alertDesc = document.getElementById("stat-stok-kritis-desc");
+        if (criticalItemsCount > 0) {
+          alertIconBg.className = "p-3 bg-rose-50 text-rose-600 rounded-xl";
+          alertDesc.innerText = "Stok sediaan di bawah had minimum.";
+          alertDesc.className = "mt-4 text-xs text-rose-600 font-semibold";
+          document.getElementById("kritis-list-container").innerHTML =
+            criticalItemsHTML;
+        } else {
+          alertIconBg.className =
+            "p-3 bg-emerald-50 text-emerald-600 rounded-xl";
+          alertDesc.innerText = "Semua sediaan selamat.";
+          alertDesc.className = "mt-4 text-xs text-emerald-600 font-medium";
+          document.getElementById("kritis-list-container").innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-sm">
+                        <i class="fa-solid fa-circle-check text-emerald-500 fa-2x mb-2 block"></i>
+                        Semua sediaan selamat.
+                    </div>
+                `;
+        }
+
+        renderOverviewChart(keuangan);
+      }
+
+      function renderOverviewChart(keuangan) {
+        const monthsNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
+          "Okt",
+          "Nov",
+          "Des",
+        ];
+        let monthlyIn = Array(12).fill(0);
+        let monthlyOut = Array(12).fill(0);
+
+        keuangan.forEach((tr) => {
+          const date = new Date(tr.tanggal);
+          if (date.getFullYear() === 2026) {
+            const m = date.getMonth();
+            if (tr.tipe === "Pemasukan")
+              monthlyIn[m] += Number(tr.nominal || 0);
+            else monthlyOut[m] += Number(tr.nominal || 0);
+          }
+        });
+
+        if (cashflowChart) {
+          cashflowChart.destroy();
+        }
+
+        const ctx = document.getElementById("chart-cashflow").getContext("2d");
+        cashflowChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: monthsNames,
+            datasets: [
+              {
+                label: "Penerimaan",
+                data: monthlyIn,
+                backgroundColor: "#10b981",
+                borderRadius: 6,
+              },
+              {
+                label: "Perbelanjaan",
+                data: monthlyOut,
+                backgroundColor: "#f43f5e",
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+                labels: { boxWidth: 12, font: { size: 11 } },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  font: { size: 10 },
+                  callback: function (value) {
+                    return value >= 1000000 ? value / 1000000 + "jt" : value;
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function loadKeuanganData() {
+        const list = stateKeuangan;
+        const tableBody = document.getElementById("keuangan-table-body");
+        let html = "";
+        [...list].reverse().forEach((item) => {
+          html += `
+                    <tr>
+                        <td class="py-4 px-6 font-medium text-slate-700">${item.tanggal}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${item.tipe === "Pemasukan" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}">${item.tipe}</span>
+                        </td>
+                        <td class="py-4 px-6">${item.kategori}</td>
+                        <td class="py-4 px-6 font-medium">${item.keterangan}</td>
+                        <td class="py-4 px-6 font-bold">${formatRupiah(Number(item.nominal || 0))}</td>
+                        <td class="py-4 px-6 text-center text-xs">${item.input_by}</td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteKeuangan('${item.id}')" class="text-rose-600 hover:text-rose-800">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      function filterKeuanganTable() {
+        const query = document
+          .getElementById("search-keuangan")
+          .value.toLowerCase();
+        const filterTipe = document.getElementById(
+          "filter-tipe-keuangan",
+        ).value;
+        const tableRows = document.querySelectorAll("#keuangan-table-body tr");
+
+        tableRows.forEach((row) => {
+          const cells = row.getElementsByTagName("td");
+          if (cells.length === 0) return;
+
+          const tipe = cells[1].innerText;
+          const keterangan = cells[3].innerText.toLowerCase();
+
+          const matchQuery = keterangan.includes(query);
+          const matchTipe =
+            filterTipe === "Semua" ||
+            tipe === (filterTipe === "Pemasukan" ? "Pemasukan" : "Pengeluaran");
+
+          if (matchQuery && matchTipe) row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      function loadUtangPiutangData() {
+        const list = stateUtangPiutang;
+        const tableBody = document.getElementById("utangpiutang-table-body");
+        let html = "";
+        list.forEach((item) => {
+          html += `
+                    <tr>
+                        <td class="py-4 px-6">${item.tanggal}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.jenis === "Utang" ? "bg-amber-100 text-amber-800" : "bg-teal-100 text-teal-800"}">${item.jenis}</span>
+                        </td>
+                        <td class="py-4 px-6 font-bold">${item.pihak}</td>
+                        <td class="py-4 px-6">${item.keterangan}</td>
+                        <td class="py-4 px-6 font-semibold">${formatRupiah(Number(item.nominal || 0))}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.status === "Lunas" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-800"}">${item.status}</span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteUtangPiutang('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      function loadRecurringData() {
+        const list = stateRecurring;
+        const tableBody = document.getElementById("recurring-table-body");
+        let html = "";
+        list.forEach((item) => {
+          html += `
+                    <tr>
+                        <td class="py-4 px-6">${item.tipe}</td>
+                        <td class="py-4 px-6">${item.kategori}</td>
+                        <td class="py-4 px-6 font-semibold">${item.keterangan}</td>
+                        <td class="py-4 px-6 font-bold">${formatRupiah(Number(item.nominal || 0))}</td>
+                        <td class="py-4 px-6">${item.frekuensi}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">${item.status}</span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteRecurring('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      // --- DIRECT RESI MANUAL GRID ---
+      function loadResiManualData() {
+        let list = stateResiManual;
+
+        while (list.length < 10) {
+          list.push({ nama_pelanggan: "", no_resi: "" });
+        }
+        if (list.length > 10) {
+          list = list.slice(0, 10);
+        }
+
+        const screenGrid = document.getElementById("screen-resi-grid-body");
+        const counterLabel = document.getElementById("screen-sheet-counter");
+
+        const filledCount = list.filter(
+          (item) =>
+            (item.nama_pelanggan || "").trim() !== "" ||
+            (item.no_resi || "").trim() !== "",
+        ).length;
+        counterLabel.innerText = `${filledCount} / 10 Terisi`;
+
+        let screenHTML = "";
+
+        for (let i = 0; i < 10; i++) {
+          const data = list[i];
+          const indexDisplay = i + 1;
+
+          screenHTML += `
+                    <div class="grid grid-cols-12 items-center bg-white border-b-2 border-slate-900">
+                        <div class="col-span-1 py-3.5 text-center font-bold font-mono text-slate-800 bg-slate-100 border-r-4 border-slate-900 h-full flex items-center justify-center">${indexDisplay}</div>
+                        
+                        <!-- Kolom Nama Pelanggan (Lebar 1/3) -->
+                        <div class="col-span-4 p-1 border-r-4 border-slate-900 h-full flex items-center">
+                            <input type="text" 
+                                   value="${data.nama_pelanggan || ""}" 
+                                   placeholder="NAMA PELANGGAN" 
+                                   onchange="updateResiField(${i}, 'nama_pelanggan', this.value)" 
+                                   class="w-full bg-transparent px-3 py-1.5 text-sm font-black text-slate-800 uppercase tracking-wide focus:bg-blue-50 focus:outline-none rounded border border-transparent focus:border-blue-400"
+                            >
+                        </div>
+                        
+                        <!-- Kolom Kode/Nomor Resi (Lebar 2/3) -->
+                        <div class="col-span-7 p-1 h-full flex items-center">
+                            <input type="text" 
+                                   value="${data.no_resi || ""}" 
+                                   placeholder="NOMOR RESI / KODE PAKET" 
+                                   onchange="updateResiField(${i}, 'no_resi', this.value)" 
+                                   class="w-full bg-transparent px-3 py-1.5 text-sm font-mono font-black text-indigo-700 tracking-wider uppercase focus:bg-blue-50 focus:outline-none rounded border border-transparent focus:border-blue-400"
+                            >
+                        </div>
+                    </div>
+                `;
+        }
+
+        screenGrid.innerHTML = screenHTML;
+        buildA4PrintTbody(list);
+      }
+
+      function updateResiField(index, field, value) {
+        executeOptimisticAction(
+          "resi_manual",
+          () => {
+            while (stateResiManual.length < 10) {
+              stateResiManual.push({ nama_pelanggan: "", no_resi: "" });
+            }
+            stateResiManual[index][field] = value.toUpperCase();
+          },
+          () => {
+            loadResiManualData();
+          },
+          `Baris #${index + 1} disimpan!`,
+        );
+      }
+
+      function buildA4PrintTbody(list) {
+        const tbody = document.getElementById("print-grid-tbody");
+        tbody.innerHTML = "";
+
+        for (let i = 0; i < 10; i++) {
+          const data = list[i] || { nama_pelanggan: "", no_resi: "" };
+          tbody.innerHTML += `
+                    <tr>
+                        <td class="col-print-nama">${data.nama_pelanggan || "&nbsp;"}</td>
+                        <td class="col-print-resi">${data.no_resi || "&nbsp;"}</td>
+                    </tr>
+                `;
+        }
+      }
+
+      function bulkDeleteAllResi() {
+        executeOptimisticAction(
+          "resi_manual",
+          () => {
+            stateResiManual = Array.from({ length: 10 }, () => ({
+              nama_pelanggan: "",
+              no_resi: "",
+            }));
+          },
+          () => {
+            loadResiManualData();
+          },
+          "Lembaran resi berhasil dikosongkan!",
+        );
+      }
+
+      function downloadFullSheet() {
+        const list = stateResiManual;
+        const canvas = document.createElement("canvas");
+        canvas.width = 1200;
+        canvas.height = 1700;
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 10;
+        ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+
+        const rowHeight = 170;
+        const col1Width = 400; // 1/3 lebar
+
+        ctx.lineWidth = 6;
+        for (let i = 1; i < 10; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, i * rowHeight);
+          ctx.lineTo(canvas.width, i * rowHeight);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(col1Width, 0);
+        ctx.lineTo(col1Width, canvas.height);
+        ctx.stroke();
+
+        ctx.fillStyle = "#000000";
+        ctx.textBaseline = "middle";
+
+        for (let i = 0; i < 10; i++) {
+          const data = list[i];
+          if (data) {
+            const nama = (data.nama_pelanggan || "").trim().toUpperCase();
+            const resi = (data.no_resi || "").trim().toUpperCase();
+            const yCenter = i * rowHeight + rowHeight / 2;
+
+            ctx.textAlign = "left";
+            ctx.font = "900 24px monospace";
+            if (nama.length > 15) ctx.font = "900 18px monospace";
+            if (nama.length > 22) ctx.font = "900 13px monospace";
+            ctx.fillText(nama, 25, yCenter);
+
+            ctx.textAlign = "center";
+            ctx.font = "900 32px monospace";
+            if (resi.length > 16) ctx.font = "900 24px monospace";
+            ctx.fillText(resi, col1Width + 800 / 2, yCenter);
+          }
+        }
+
+        const dataUrl = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = `label-sheet-a4-${Date.now()}.png`;
+        link.href = dataUrl;
+        link.click();
+      }
+
+      function cetakResiA4Direct() {
+        window.print();
+      }
+
+      function loadBarangData() {
+        const list = stateBarang;
+        const tableBody = document.getElementById("barang-table-body");
+        let html = "";
+        list.forEach((item) => {
+          const isKritis =
+            Number(item.stok_sekarang || 0) <= Number(item.stok_minimum || 0);
+          html += `
+                    <tr>
+                        <td class="py-4 px-6 font-bold">${item.id_barang}</td>
+                        <td class="py-4 px-6 font-bold text-slate-800">${item.nama_barang}</td>
+                        <td class="py-4 px-6">${item.kategori}</td>
+                        <td class="py-4 px-6 text-center font-semibold text-slate-500">${item.stok_minimum}</td>
+                        <td class="py-4 px-6 text-center font-bold">${item.stok_sekarang}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-1 rounded text-xs font-bold ${isKritis ? "bg-red-100 text-red-800" : "bg-emerald-100 text-emerald-800"}">
+                                ${isKritis ? "Stok Kritikal" : "Sediaan Aman"}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteBarang('${item.id_barang}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      function loadMutasiData() {
+        const mutasi = stateMutasi;
+        const barang = stateBarang;
+        const tableBody = document.getElementById("mutasi-table-body");
+        let html = "";
+        mutasi.forEach((item) => {
+          const bRef = barang.find((x) => x.id_barang === item.id_barang);
+          const nameLabel = bRef ? bRef.nama_barang : "Barang Terhapus";
+          html += `
+                    <tr>
+                        <td class="py-4 px-6">${item.tanggal}</td>
+                        <td class="py-4 px-6 font-bold">${nameLabel}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-1 rounded text-xs font-bold ${item.jenis_mutasi === "Masuk" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"}">${item.jenis_mutasi}</span>
+                        </td>
+                        <td class="py-4 px-6 text-center font-bold">${item.jumlah}</td>
+                        <td class="py-4 px-6">${item.keterangan}</td>
+                        <td class="py-4 px-6 text-center text-xs">${item.input_by}</td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteMutasi('${item.id_mutasi}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      function loadKategoriKeuanganData() {
+        const list = stateKatKeuangan;
+        const tableBody = document.getElementById("kat-keuangan-table-body");
+        let html = "";
+        list.forEach((item) => {
+          html += `
+                    <tr>
+                        <td class="py-4 px-6 font-bold">${item.nama_kategori}</td>
+                        <td class="py-4 px-6">${item.tipe}</td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteKategoriKeuangan('${item.id}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      function loadKategoriInventarisData() {
+        const list = stateKatInventaris;
+        const tableBody = document.getElementById("kat-inventaris-table-body");
+        let html = "";
+        list.forEach((item) => {
+          html += `
+                    <tr>
+                        <td class="py-4 px-6 font-bold">${item.nama_kategori}</td>
+                        <td class="py-4 px-6 text-right">
+                            <button onclick="deleteKategoriInventaris('${item.id}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+        });
+        tableBody.innerHTML = html;
+      }
+
+      function loadSettingsData() {
+        const company = stateCompany;
+        const users = stateUsers;
+        const admin = users.find((u) => u.role === "Admin");
+
+        document.getElementById("settings-app-name").value =
+          company.app_name || "";
+        document.getElementById("settings-app-address").value =
+          company.app_address || "";
+        document.getElementById("settings-app-logo-url").value =
+          company.app_logo_url || "";
+
+        if (admin) {
+          document.getElementById("cred-admin-nama").value =
+            admin.nama_lengkap || "";
+          document.getElementById("cred-admin-user").value =
+            admin.username || "";
+          document.getElementById("cred-admin-pass").value = "";
+        }
+      }
+
+      // --- SUBMISSION FORMS AND MODALS ---
+      function openModal() {
+        const modal = document.getElementById("global-modal");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          document.getElementById("modal-card").classList.remove("scale-95");
+          document.getElementById("modal-card").classList.add("scale-100");
+        }, 50);
+      }
+
+      function closeModal() {
+        document.getElementById("modal-card").classList.add("scale-95");
+        document.getElementById("modal-card").classList.remove("scale-100");
+        setTimeout(() => {
+          document.getElementById("global-modal").classList.add("hidden");
+        }, 100);
+      }
+
+      function openKeuanganModal() {
+        const categories = stateKatKeuangan;
+        document.getElementById("form-action-type").value = "keuangan";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Sediakan Catatan Kas";
+
+        let catOptions = "";
+        categories.forEach((c) => {
+          catOptions += `<option value="${c.nama_kategori}">${c.nama_kategori} (${c.tipe})</option>`;
+        });
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tarikh Transaksi</label>
+                    <input type="date" id="form-keuangan-tanggal" value="${new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Kas</label>
+                    <select id="form-keuangan-tipe" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Pemasukan">Penerimaan (+)</option>
+                        <option value="Pengeluaran">Perbelanjaan (-)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori Transaksi</label>
+                    <select id="form-keuangan-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        ${catOptions}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Nominal (Rp)</label>
+                    <input type="number" id="form-keuangan-nominal" placeholder="Contoh: 150000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan / Deskripsi</label>
+                    <input type="text" id="form-keuangan-keterangan" placeholder="Rincian perbelanjaan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            `;
+        openModal();
+      }
+
+      function openUtangPiutangModal() {
+        document.getElementById("form-action-type").value = "utangpiutang";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Daftar Hutang / Piutang Baru";
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tarikh Kontrak</label>
+                    <input type="date" id="form-up-tanggal" value="${new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis</label>
+                    <select id="form-up-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Utang">Hutang (Tanggungan kita kepada Pembekal)</option>
+                        <option value="Piutang">Piutang (Wang kita di tangan pelanggan)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Pihak Berkenaan</label>
+                    <input type="text" id="form-up-pihak" placeholder="Contoh: Pembekal Kain Combed" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jumlah (Rp)</label>
+                    <input type="number" id="form-up-nominal" placeholder="Contoh: 1200000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan Ringkas</label>
+                    <input type="text" id="form-up-keterangan" placeholder="Sebab baki hutang" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            `;
+        openModal();
+      }
+
+      function openRecurringModal() {
+        const categories = stateKatKeuangan;
+        document.getElementById("form-action-type").value = "recurring";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Sediakan Urusniaga Berulang";
+
+        let catOptions = "";
+        categories.forEach((c) => {
+          catOptions += `<option value="${c.nama_kategori}">${c.nama_kategori}</option>`;
+        });
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Aliran</label>
+                    <select id="form-rc-tipe" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Pengeluaran">Perbelanjaan Tetap (-)</option>
+                        <option value="Pemasukan">Penerimaan Tetap (+)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori</label>
+                    <select id="form-rc-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        ${catOptions}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jumlah (Rp)</label>
+                    <input type="number" id="form-rc-nominal" placeholder="Contoh: 300000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Deskripsi Kontrak</label>
+                    <input type="text" id="form-rc-keterangan" placeholder="Sewa kedai bulanan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kerapuhan (Frekuensi)</label>
+                    <select id="form-rc-frekuensi" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Harian">Setiap Hari</option>
+                        <option value="Mingguan">Setiap Minggu</option>
+                        <option value="Bulanan">Setiap Bulan</option>
+                    </select>
+                </div>
+            `;
+        openModal();
+      }
+
+      function openBarangModal() {
+        const categories = stateKatInventaris;
+        document.getElementById("form-action-type").value = "barang";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Daftar Barang Master Baru";
+
+        let catOptions = "";
+        categories.forEach((c) => {
+          catOptions += `<option value="${c.nama_kategori}">${c.nama_kategori}</option>`;
+        });
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">ID / Kod Barang</label>
+                    <input type="text" id="form-brg-id" placeholder="Contoh: BRG-101" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 uppercase" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Barang Sediaan</label>
+                    <input type="text" id="form-brg-nama" placeholder="Contoh: Cotton Combed 30s Red" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori Inventori</label>
+                    <select id="form-brg-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        ${catOptions}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Had Amaran Minimum</label>
+                    <input type="number" id="form-brg-minimum" placeholder="Contoh: 15" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Stok Fizikal Permulaan</label>
+                    <input type="number" id="form-brg-sekarang" placeholder="Contoh: 100" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="0">
+                </div>
+            `;
+        openModal();
+      }
+
+      function openMutasiModal() {
+        const listBarang = stateBarang;
+        document.getElementById("form-action-type").value = "mutasi";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Rekod Pergerakan Stok";
+
+        let brgOptions = "";
+        listBarang.forEach((b) => {
+          brgOptions += `<option value="${b.id_barang}">${b.id_barang} - ${b.nama_barang} (Baki: ${b.stok_sekarang})</option>`;
+        });
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tarikh Aliran</label>
+                    <input type="date" id="form-mt-tanggal" value="${new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Pilih Barang</label>
+                    <select id="form-mt-barang" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 text-xs" required>
+                        ${brgOptions}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Sebab Perubahan</label>
+                    <select id="form-mt-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Masuk">Masuk (Penambahan Bekalan)</option>
+                        <option value="Keluar">Keluar (Projek Sablon)</option>
+                        <option value="Rusak">Rusak / Cacat Produksi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kuantiti Aliran</label>
+                    <input type="number" id="form-mt-jumlah" placeholder="Contoh: 10" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan / Nama Projek</label>
+                    <input type="text" id="form-mt-keterangan" placeholder="Sablon Alumni Sekolah" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            `;
+        openModal();
+      }
+
+      function openKategoriKeuanganModal() {
+        document.getElementById("form-action-type").value = "kategori_keuangan";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Tambah Kategori Aliran Wang";
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Kategori</label>
+                    <input type="text" id="form-katkeu-nama" placeholder="Contoh: Bahan Sablon" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Default</label>
+                    <select id="form-katkeu-tipe" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Pemasukan">Penerimaan (+)</option>
+                        <option value="Pengeluaran">Perbelanjaan (-)</option>
+                    </select>
+                </div>
+            `;
+        openModal();
+      }
+
+      function openKategoriInventarisModal() {
+        document.getElementById("form-action-type").value =
+          "kategori_inventaris";
+        document.getElementById("form-edit-id").value = "";
+        document.getElementById("modal-title").innerText =
+          "Tambah Kategori Inventori";
+
+        document.getElementById("modal-form-fields").innerHTML = `
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Kategori Sediaan</label>
+                    <input type="text" id="form-katinv-nama" placeholder="Contoh: Dakwat Sablon" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                </div>
+            `;
+        openModal();
+      }
+
+      // --- FORMS SUBMIT OPERATIONS ---
+      function handleFormSubmit(event) {
+        event.preventDefault();
+        const actionType = document.getElementById("form-action-type").value;
+        closeModal();
+
+        if (actionType === "keuangan") {
+          const newItem = {
+            id: "tr" + Date.now(),
+            tanggal: document.getElementById("form-keuangan-tanggal").value,
+            tipe: document.getElementById("form-keuangan-tipe").value,
+            kategori: document.getElementById("form-keuangan-kategori").value,
+            nominal: parseFloat(
+              document.getElementById("form-keuangan-nominal").value,
+            ),
+            keterangan: document
+              .getElementById("form-keuangan-keterangan")
+              .value.trim(),
+            input_by: currentUser.nama_lengkap,
+          };
+
+          executeOptimisticAction(
+            "keuangan",
+            () => {
+              stateKeuangan.push(newItem);
+            },
+            () => {
+              if (currentView === "keuangan-transaksi") loadKeuanganData();
+              loadOverviewData();
+            },
+            "Catatan kas berhasil disimpan!",
+          );
+        } else if (actionType === "utangpiutang") {
+          const newItem = {
+            id: "up" + Date.now(),
+            tanggal: document.getElementById("form-up-tanggal").value,
+            jenis: document.getElementById("form-up-jenis").value,
+            pihak: document.getElementById("form-up-pihak").value.trim(),
+            nominal: parseFloat(
+              document.getElementById("form-up-nominal").value,
+            ),
+            keterangan: document
+              .getElementById("form-up-keterangan")
+              .value.trim(),
+            status: "Belum Lunas",
+            input_by: currentUser.nama_lengkap,
+          };
+
+          executeOptimisticAction(
+            "utang_piutang",
+            () => {
+              stateUtangPiutang.push(newItem);
+            },
+            () => {
+              if (currentView === "keuangan-utangpiutang")
+                loadUtangPiutangData();
+            },
+            "Catatan hutang-piutang berhasil didaftarkan!",
+          );
+        } else if (actionType === "recurring") {
+          const newItem = {
+            id: "rc" + Date.now(),
+            tipe: document.getElementById("form-rc-tipe").value,
+            kategori: document.getElementById("form-rc-kategori").value,
+            nominal: parseFloat(
+              document.getElementById("form-rc-nominal").value,
+            ),
+            keterangan: document
+              .getElementById("form-rc-keterangan")
+              .value.trim(),
+            frekuensi: document.getElementById("form-rc-frekuensi").value,
+            status: "Aktif",
+            tanggal_mulai: new Date().toISOString().split("T")[0],
+            terakhir_diproses: "-",
+          };
+
+          executeOptimisticAction(
+            "recurring",
+            () => {
+              stateRecurring.push(newItem);
+            },
+            () => {
+              if (currentView === "keuangan-recurring") loadRecurringData();
+            },
+            "Kontrak berulang berhasil didaftarkan!",
+          );
+        } else if (actionType === "barang") {
+          const newItem = {
+            id_barang: document
+              .getElementById("form-brg-id")
+              .value.trim()
+              .toUpperCase(),
+            nama_barang: document.getElementById("form-brg-nama").value.trim(),
+            kategori: document.getElementById("form-brg-kategori").value,
+            stok_minimum: parseInt(
+              document.getElementById("form-brg-minimum").value,
+            ),
+            stok_sekarang: parseInt(
+              document.getElementById("form-brg-sekarang").value,
+            ),
+          };
+
+          if (stateBarang.some((x) => x.id_barang === newItem.id_barang)) {
+            Swal.fire(
+              "Error",
+              "ID Barang telah digunakan di katalog!",
+              "error",
+            );
+            return;
+          }
+
+          executeOptimisticAction(
+            "barang",
+            () => {
+              stateBarang.push(newItem);
+            },
+            () => {
+              if (currentView === "inventaris-katalog") loadBarangData();
+              loadOverviewData();
+            },
+            "Barang master berhasil terdaftar!",
+          );
+        } else if (actionType === "mutasi") {
+          const idBarang = document.getElementById("form-mt-barang").value;
+          const jenisMutasi = document.getElementById("form-mt-jenis").value;
+          const jumlah = parseInt(
+            document.getElementById("form-mt-jumlah").value,
+          );
+
+          const newMutasi = {
+            id_mutasi: "m" + Date.now(),
+            id_barang: idBarang,
+            tanggal: document.getElementById("form-mt-tanggal").value,
+            jenis_mutasi: jenisMutasi,
+            jumlah: jumlah,
+            keterangan: document
+              .getElementById("form-mt-keterangan")
+              .value.trim(),
+            input_by: currentUser.nama_lengkap,
+          };
+
+          executeOptimisticAction(
+            ["mutasi", "barang"],
+            () => {
+              const brgIdx = stateBarang.findIndex(
+                (b) => b.id_barang === idBarang,
+              );
+              if (brgIdx !== -1) {
+                if (jenisMutasi === "Masuk") {
+                  stateBarang[brgIdx].stok_sekarang =
+                    Number(stateBarang[brgIdx].stok_sekarang || 0) + jumlah;
+                } else {
+                  stateBarang[brgIdx].stok_sekarang =
+                    Number(stateBarang[brgIdx].stok_sekarang || 0) - jumlah;
+                }
+              }
+              stateMutasi.push(newMutasi);
+            },
+            () => {
+              if (currentView === "inventaris-mutasi") loadMutasiData();
+              loadBarangData();
+              loadOverviewData();
+            },
+            "Mutasi stok berhasil direkam!",
+          );
+        } else if (actionType === "kategori_keuangan") {
+          const newItem = {
+            id: "k" + Date.now(),
+            nama_kategori: document
+              .getElementById("form-katkeu-nama")
+              .value.trim(),
+            tipe: document.getElementById("form-katkeu-tipe").value,
+          };
+
+          executeOptimisticAction(
+            "kat_keuangan",
+            () => {
+              stateKatKeuangan.push(newItem);
+            },
+            () => {
+              if (currentView === "kategori-keuangan")
+                loadKategoriKeuanganData();
+            },
+            "Kategori aliran kas berhasil disimpan!",
+          );
+        } else if (actionType === "kategori_inventaris") {
+          const newItem = {
+            id: "ki" + Date.now(),
+            nama_kategori: document
+              .getElementById("form-katinv-nama")
+              .value.trim(),
+          };
+
+          executeOptimisticAction(
+            "kat_inventaris",
+            () => {
+              stateKatInventaris.push(newItem);
+            },
+            () => {
+              if (currentView === "kategori-inventaris")
+                loadKategoriInventarisData();
+            },
+            "Kategori sediaan berhasil terdaftar!",
+          );
+        }
+      }
+
+      // --- DELETIONS WITH OPTIMISTIC ACTION ---
+      function deleteKeuangan(id) {
+        Swal.fire({
+          title: "Hapus data kas?",
+          text: "Tindakan ini tidak dapat dibatalkan!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Hapus!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            executeOptimisticAction(
+              "keuangan",
+              () => {
+                stateKeuangan = stateKeuangan.filter((x) => x.id !== id);
+              },
+              () => {
+                loadKeuanganData();
+                loadOverviewData();
+              },
+              "Pencatatan kas berhasil dihapus!",
+            );
+          }
+        });
+      }
+
+      // --- PENGHAPUSAN LAIN ---
+      function deleteUtangPiutang(id) {
+        Swal.fire({
+          title: "Hapus data utang/piutang?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Hapus!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            executeOptimisticAction(
+              "utang_piutang",
+              () => {
+                stateUtangPiutang = stateUtangPiutang.filter(
+                  (x) => x.id !== id,
+                );
+              },
+              () => {
+                loadUtangPiutangData();
+              },
+              "Pencatatan utang-piutang dihapus!",
+            );
+          }
+        });
+      }
+
+      function deleteRecurring(id) {
+        Swal.fire({
+          title: "Hapus kontrak berulang?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Hapus!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            executeOptimisticAction(
+              "recurring",
+              () => {
+                stateRecurring = stateRecurring.filter((x) => x.id !== id);
+              },
+              () => {
+                loadRecurringData();
+              },
+              "Kontrak berulang telah dihapus!",
+            );
+          }
+        });
+      }
+
+      function deleteBarang(idBarang) {
+        Swal.fire({
+          title: "Hapus sediaan barang master?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Hapus!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            executeOptimisticAction(
+              "barang",
+              () => {
+                stateBarang = stateBarang.filter(
+                  (x) => x.id_barang !== idBarang,
+                );
+              },
+              () => {
+                loadBarangData();
+                loadOverviewData();
+              },
+              "Master sediaan barang berhasil dibersihkan!",
+            );
+          }
+        });
+      }
+
+      function deleteMutasi(id) {
+        Swal.fire({
+          title: "Batalkan mutasi ini?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya, Batalkan!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const item = stateMutasi.find((x) => x.id_mutasi === id);
+            if (item) {
+              executeOptimisticAction(
+                ["mutasi", "barang"],
+                () => {
+                  const idx = stateBarang.findIndex(
+                    (b) => b.id_barang === item.id_barang,
+                  );
+                  if (idx !== -1) {
+                    if (item.jenis_mutasi === "Masuk") {
+                      stateBarang[idx].stok_sekarang =
+                        Number(stateBarang[idx].stok_sekarang || 0) -
+                        item.jumlah;
+                    } else {
+                      stateBarang[idx].stok_sekarang =
+                        Number(stateBarang[idx].stok_sekarang || 0) +
+                        item.jumlah;
+                    }
+                  }
+                  stateMutasi = stateMutasi.filter((x) => x.id_mutasi !== id);
+                },
+                () => {
+                  loadMutasiData();
+                  loadBarangData();
+                  loadOverviewData();
+                },
+                "Transaksi mutasi berhasil dibatalkan!",
+              );
+            }
+          }
+        });
+      }
+
+      // Pengaturan Hapus Kategori Aliran Kas
+      function deleteKategoriKeuangan(id) {
+        Swal.fire({
+          title: "Hapus kategori keuangan?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            executeOptimisticAction(
+              "kat_keuangan",
+              () => {
+                stateKatKeuangan = stateKatKeuangan.filter((x) => x.id !== id);
+              },
+              () => {
+                loadKategoriKeuanganData();
+              },
+              "Kategori kas berhasil dihapus!",
+            );
+          }
+        });
+      }
+
+      // Pengaturan Hapus Kategori Sediaan/Bahan
+      function deleteKategoriInventaris(id) {
+        Swal.fire({
+          title: "Hapus kategori sediaan?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          cancelButtonColor: "#64748b",
+          confirmButtonText: "Ya",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            executeOptimisticAction(
+              "kat_inventaris",
+              () => {
+                stateKatInventaris = stateKatInventaris.filter(
+                  (x) => x.id !== id,
+                );
+              },
+              () => {
+                loadKategoriInventarisData();
+              },
+              "Kategori sediaan berhasil dihapus!",
+            );
+          }
+        });
+      }
+
+      function saveCompanySettings(event) {
+        event.preventDefault();
+        const config = {
+          app_name: document.getElementById("settings-app-name").value.trim(),
+          app_address: document
+            .getElementById("settings-app-address")
+            .value.trim(),
+          app_logo_url: document
+            .getElementById("settings-app-logo-url")
+            .value.trim(),
+        };
+
+        executeOptimisticAction(
+          "company",
+          () => {
+            stateCompany = config;
+          },
+          () => {
+            startApp();
+          },
+          "Konfigurasi toko berhasil diperbarui!",
+        );
+      }
+
+      function updateUserCredentials(event, roleKey) {
+        event.preventDefault();
+        const users = stateUsers;
+        const idx = users.findIndex((u) => u.role.toLowerCase() === roleKey);
+
+        if (idx !== -1) {
+          const nameIn = document
+            .getElementById(`cred-${roleKey}-nama`)
+            .value.trim();
+          const passIn = document.getElementById(`cred-${roleKey}-pass`).value;
+
+          if (passIn.length < 4) {
+            Swal.fire(
+              "Gagal",
+              "Sandi harus terdiri atas minimal 4 karakter!",
+              "error",
+            );
+            return;
+          }
+
+          executeOptimisticAction(
+            "users",
+            () => {
+              stateUsers[idx].nama_lengkap = nameIn;
+              stateUsers[idx].password = passIn;
+            },
+            () => {
+              startApp();
+            },
+            "Kredensial sandi administrator aman!",
+          );
+        }
+      }
+
+      // --- INITIALIZATION ---
+      window.onload = function () {
+        // Periksa apakah berjalan di Google Apps Script asli atau memiliki URL eksternal yang diatur
+        const hasValidUrl =
+          GAS_URL &&
+          GAS_URL !== "URL_WEB_APP_GAS_ANDA" &&
+          GAS_URL.startsWith("http");
+        const hasGoogleRun =
+          typeof google !== "undefined" && google.script && google.script.run;
+
+        if (hasValidUrl || hasGoogleRun) {
+          if (hasValidUrl) {
+            document
+              .getElementById("gas-production-warning")
+              .classList.add("hidden");
+          } else {
+            document
+              .getElementById("gas-production-warning")
+              .classList.remove("hidden");
+            document.getElementById("warning-bar-text").innerText =
+              "Sistem berjalan di mode produksi Google Server.";
+          }
+
+          // Periksa sesi login aktif di session storage
+          const session = sessionStorage.getItem("gas_session");
+          if (session) {
+            currentUser = JSON.parse(session);
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("main-app").classList.remove("hidden");
+            fetchDataAndStart();
+          } else {
+            // AMAN MURNI: Tampilkan halaman login secara langsung tanpa melakukan pre-download payload database
+            document.getElementById("login-screen").classList.remove("hidden");
+          }
+        } else {
+          // Tampilkan bar peringatan lingkungan jika dibuka di luar Apps Script (Iframe Canvas Preview / Mode Demo)
+          document
+            .getElementById("gas-production-warning")
+            .classList.remove("hidden");
+
+          // Dimuat demi simulator di dalam Canvas editor (Preview Mode)
+          const dummyPayload = {
+            users: [
+              {
+                id: "1",
+                username: "admin",
+                password: "admin123",
+                role: "Admin",
+                nama_lengkap: "Adi Admin (Preview Mode)",
+              },
+              {
+                id: "2",
+                username: "staff",
+                password: "staff123",
+                role: "Staff",
+                nama_lengkap: "Bayu Staff Lapangan (Preview Mode)",
+              },
+            ],
+            kat_keuangan: [
+              { id: "k1", nama_kategori: "Order Sablon", tipe: "Pemasukan" },
+              {
+                id: "k2",
+                nama_kategori: "Beli Kaos Polos",
+                tipe: "Pengeluaran",
+              },
+            ],
+            kat_inventaris: [{ id: "ki1", nama_kategori: "Bahan Baku Kaos" }],
+            keuangan: [
+              {
+                id: "tr1",
+                tanggal: "2026-05-20",
+                tipe: "Pemasukan",
+                nominal: 2500000,
+                kategori: "Order Sablon",
+                keterangan: "DP Order Sablon Kaos Panitia 100pcs",
+                input_by: "Adi Admin",
+              },
+            ],
+            utang_piutang: [
+              {
+                id: "up1",
+                jenis: "Utang",
+                pihak: "Supplier Kaos Bandung",
+                nominal: 800000,
+                keterangan: "Sisa pelunasan pesanan bahan combed",
+                tanggal: "2026-05-22",
+                status: "Belum Lunas",
+                input_by: "Adi Admin",
+              },
+            ],
+            recurring: [
+              {
+                id: "rc1",
+                tipe: "Pengeluaran",
+                nominal: 250000,
+                kategori: "Beli Kaos Polos",
+                keterangan: "Sewa Internet Wifi Workshop Sablon",
+                frekuensi: "Bulanan",
+                status: "Aktif",
+                tanggal_mulai: "2026-05-01",
+                terakhir_diproses: "2026-05-01",
+              },
+            ],
+            barang: [
+              {
+                id_barang: "B001",
+                nama_barang: "Cotton Combed 30s Black L",
+                kategori: "Bahan Baku Kaos",
+                stok_minimum: 50,
+                stok_sekarang: 120,
+              },
+            ],
+            mutasi: [
+              {
+                id_mutasi: "m1",
+                id_barang: "B001",
+                tanggal: "2026-05-22",
+                jenis_mutasi: "Masuk",
+                jumlah: 120,
+                keterangan: "Stok datang dari supplier kaos",
+                input_by: "Bayu Staff",
+              },
+            ],
+            company: {
+              app_name: "Gas Sablon (Preview Mode)",
+              app_address: "Mojokerto, Jawa Timur",
+              app_logo_url: "",
+            },
+            resi_manual: Array.from({ length: 10 }, () => ({
+              nama_pelanggan: "",
+              no_resi: "",
+            })),
+          };
+
+          syncInMemoryState(dummyPayload);
+          document.getElementById("login-screen").classList.remove("hidden");
+        }
+      };
+    </script>
+  </body>
+</html>
