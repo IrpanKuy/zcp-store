@@ -18,6 +18,10 @@
     <style>
       /* Sembunyikan elemen dashboard secara total saat mencetak kertas A4 */
       @media print {
+        @page {
+          size: A4 portrait;
+          margin: 0;
+        }
         body {
           background: #ffffff;
           color: #000000;
@@ -40,18 +44,18 @@
           width: 210mm; /* Lebar Standard A4 */
           height: 297mm; /* Tinggi Standard A4 */
           margin: 0;
-          padding: 10mm;
+          padding: 8mm;
           box-sizing: border-box;
         }
-        /* Desain Grid Kotak Potong Hitam Tebal Sesuai Gambar Sketsa (15 Baris) */
+        /* Desain Grid Kotak Potong Hitam Tebal Sesuai Gambar Sketsa (15 Baris, 2 Kolom) */
         .print-grid-table {
           width: 100%;
-          height: 275mm; /* Mengisi tinggi printable area kertas A4 */
+          height: 100%; /* Mengisi tinggi printable area kertas A4 secara penuh */
           border-collapse: collapse;
           table-layout: fixed;
         }
         .print-grid-table tr {
-          height: 18.33mm; /* Membagi rata tinggi kertas untuk 15 baris */
+          height: 18.7mm; /* Membagi rata tinggi kertas untuk 15 baris */
         }
         .print-grid-table td {
           border: 3px solid #000000 !important;
@@ -68,7 +72,7 @@
           width: 33.33% !important; /* Lebar Nama 1/3 */
         }
         .col-print-resi {
-          width: 66.66% !important; /* Lebar Resi 2/3 */
+          width: 66.67% !important; /* Lebar Resi 2/3 */
         }
       }
       ::-webkit-scrollbar {
@@ -159,7 +163,7 @@
             data-view="keuangan-transaksi"
           >
             <i class="fa-solid fa-wallet w-5"></i>
-            <span>Buku Kas Harian</span>
+            <span>Transaksi</span>
           </button>
           <button
             onclick="switchView('keuangan-utangpiutang')"
@@ -220,7 +224,7 @@
             <span>Manajemen Stok</span>
           </button>
 
-          <!-- Kelompok Pengaturan Kategori -->
+          <!-- Kelompok Kategori Dinamis -->
           <div class="pt-4 pb-1">
             <span
               class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
@@ -242,22 +246,6 @@
           >
             <i class="fa-solid fa-folder-open w-5"></i>
             <span>Kategori Barang</span>
-          </button>
-
-          <!-- Kelompok Pengaturan Sistem -->
-          <div class="pt-4 pb-1">
-            <span
-              class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
-              >Sistem</span
-            >
-          </div>
-          <button
-            onclick="switchView('pengaturan')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
-            data-view="pengaturan"
-          >
-            <i class="fa-solid fa-gears w-5"></i>
-            <span>Pengaturan Aplikasi</span>
           </button>
         </nav>
 
@@ -506,9 +494,7 @@
               class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <div>
-                <h1 class="text-2xl font-bold text-slate-900">
-                  Buku Kas Harian
-                </h1>
+                <h1 class="text-2xl font-bold text-slate-900">Transaksi</h1>
                 <p class="text-slate-500 text-sm mt-0.5">
                   Mencatat seluruh pemasukan dari transaksi penjualan/maklon,
                   serta pengeluaran belanja bahan produksi.
@@ -842,7 +828,7 @@
             </div>
           </div>
 
-          <!-- VIEW 6: INVENTARIS KATALOG -->
+          <!-- VIEW 6: DATA STOK -->
           <div id="view-inventaris-katalog" class="view-panel space-y-6 hidden">
             <div
               class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
@@ -909,12 +895,11 @@
                     class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
                   >
                     <tr>
-                      <th class="py-4 px-6">ID Barang</th>
-                      <th class="py-4 px-6">Nama Sediaan</th>
+                      <th class="py-4 px-6">Nama Barang</th>
                       <th class="py-4 px-6">Kategori</th>
                       <th class="py-4 px-6 text-center">Stok Minimum</th>
                       <th class="py-4 px-6 text-center">Stok Saat Ini</th>
-                      <th class="py-4 px-6">Status Sediaan</th>
+                      <th class="py-4 px-6">Status Barang</th>
                       <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
@@ -1148,113 +1133,6 @@
               </div>
             </div>
           </div>
-
-          <!-- VIEW 10: TETAPAN (ADMIN ONLY) -->
-          <div id="view-pengaturan" class="view-panel space-y-6 hidden">
-            <div>
-              <h1 class="text-2xl font-bold text-slate-900">
-                Pengaturan Aplikasi
-              </h1>
-              <p class="text-slate-500 text-sm mt-0.5">
-                Suaikan profil identitas konveksi, kustomisasi logo, dan kontrol
-                struktur spreadsheet terhubung.
-              </p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <!-- Profil Bengkel -->
-              <div
-                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
-              >
-                <h3
-                  class="font-bold text-slate-800 flex items-center gap-2 text-base"
-                >
-                  <i class="fa-solid fa-store text-blue-600"></i>
-                  Identitas Profil Toko
-                </h3>
-                <form
-                  id="settings-company-form"
-                  onsubmit="saveCompanySettings(event)"
-                  class="space-y-4"
-                >
-                  <div>
-                    <label
-                      class="block text-slate-700 text-xs font-semibold mb-1"
-                      >Nama Toko / Studio</label
-                    >
-                    <input
-                      id="settings-app-name"
-                      type="text"
-                      class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label
-                      class="block text-slate-700 text-xs font-semibold mb-1"
-                      >Alamat Fisik Toko</label
-                    >
-                    <textarea
-                      id="settings-app-address"
-                      class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
-                      required
-                    ></textarea>
-                  </div>
-                  <div>
-                    <label
-                      class="block text-slate-700 text-xs font-semibold mb-1"
-                      >URL Gambar Logo (Direct URL)</label
-                    >
-                    <input
-                      id="settings-app-logo-url"
-                      type="url"
-                      class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="https://domain.com/logo.png"
-                    />
-                    <p class="text-[10px] text-slate-400 mt-1">
-                      Biarkan kosong jika ingin menggunakan ikon baju sablon
-                      standar bawaan sistem.
-                    </p>
-                  </div>
-                  <button
-                    type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg transition"
-                  >
-                    Simpan Identitas
-                  </button>
-                </form>
-              </div>
-
-              <!-- Panel Manual Perbaikan Database -->
-              <div
-                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between"
-              >
-                <div>
-                  <h3
-                    class="font-bold text-slate-800 flex items-center gap-2 text-base"
-                  >
-                    <i class="fa-solid fa-database text-blue-600"></i>
-                    Integritas Database Google Sheets
-                  </h3>
-                  <p class="text-sm text-slate-500 mt-2 leading-relaxed">
-                    Jika Anda secara tidak sengaja menghapus tab/sheet pada
-                    Google Sheets, gunakan tombol di bawah untuk membuat ulang
-                    struktur tabel kosong secara otomatis tanpa merusak data
-                    lain yang ada.
-                  </p>
-                </div>
-                <div class="pt-4 border-t border-slate-100">
-                  <button
-                    onclick="triggerSetupDatabase()"
-                    class="w-full bg-slate-900 hover:bg-slate-950 text-white font-semibold text-xs py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
-                  >
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                    <span>Setup / Reset Struktur Tabel Wajib</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
     </div>
@@ -1325,10 +1203,13 @@
     <!-- CLIENT SIDE CODE ENGINE FOR ENGINE STORAGE -->
     <script>
       // ==========================================
-      // KONFIGURASI HOSTING NETLIFY (GAS BACKEND)
+      // KONFIGURASI UTAMA APLIKASI
       // ==========================================
       const GAS_URL =
-        "https://script.google.com/macros/s/AKfycbx_OzfAJ20np9273tmatdZR7V0-ETkF4ZGLPBU-z2icdwYuC8AvqQlW02qGKuLAkICn/exec";
+        "https://script.google.com/macros/s/AKfycbwdXVfO8XAzZ1pIIBYln5qIZqSwuNCkQ4EOzKlVMxr-Spwnfao2J9KA3ER5I11O3cqy/exec";
+      const APP_NAME = "ZCP Store";
+      const APP_LOGO_URL =
+        "https://mms.img.susercontent.com/bee5cbcb1e0f12133fcbb371b4715f38"; // Biarkan kosong jika ingin menggunakan ikon baju sablon standar bawaan sistem.
 
       // --- SISTEM VARIABEL MEMORY ---
       let stateUsers = [];
@@ -1339,7 +1220,6 @@
       let stateRecurring = [];
       let stateBarang = [];
       let stateMutasi = [];
-      let stateCompany = {};
 
       // 100% Client-side untuk Resi (15 baris)
       let stateResiManual = Array.from({ length: 15 }, () => ({
@@ -1360,7 +1240,6 @@
           stateRecurring = fetchedData.recurring || [];
           stateBarang = fetchedData.barang || [];
           stateMutasi = fetchedData.mutasi || [];
-          stateCompany = fetchedData.company || {};
         }
       }
 
@@ -1372,7 +1251,6 @@
         if (key === "mutasi") return stateMutasi;
         if (key === "kat_keuangan") return stateKatKeuangan;
         if (key === "kat_inventaris") return stateKatInventaris;
-        if (key === "company") return stateCompany;
         return [];
       }
 
@@ -1384,7 +1262,6 @@
         if (key === "mutasi") stateMutasi = previousState || [];
         if (key === "kat_keuangan") stateKatKeuangan = previousState || [];
         if (key === "kat_inventaris") stateKatInventaris = previousState || [];
-        if (key === "company") stateCompany = previousState || {};
       }
 
       /**
@@ -1541,8 +1418,7 @@
 
       // --- BRANDING CONTROLLER ---
       function applyCustomBranding() {
-        const company = stateCompany;
-        const appName = company.app_name || "Gas Sablon App";
+        const appName = APP_NAME || "Gas Sablon App";
         document.getElementById("sidebar-app-name").innerText = appName;
         document.getElementById("header-app-name").innerText = appName;
 
@@ -1550,14 +1426,14 @@
         const logoInHeader = document.getElementById("header-logo-container");
         const defaultMiniHanger = `<i class="fa-solid fa-shirt"></i>`;
 
-        if (company.app_logo_url && company.app_logo_url.trim() !== "") {
+        if (APP_LOGO_URL && APP_LOGO_URL.trim() !== "") {
           logoInSidebar.className =
             "h-10 w-10 rounded-lg flex items-center justify-center overflow-hidden bg-transparent flex-shrink-0 border border-slate-700/50";
           logoInHeader.className =
             "h-8 w-8 rounded-md flex items-center justify-center overflow-hidden bg-transparent flex-shrink-0 border border-slate-200";
 
-          logoInSidebar.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="resetLogoToDefault(this)">`;
-          logoInHeader.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="resetLogoToDefault(this)">`;
+          logoInSidebar.innerHTML = `<img src="${APP_LOGO_URL}" class="h-full w-full object-cover" onerror="resetLogoToDefault(this)">`;
+          logoInHeader.innerHTML = `<img src="${APP_LOGO_URL}" class="h-full w-full object-cover" onerror="resetLogoToDefault(this)">`;
         } else {
           logoInSidebar.className =
             "h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center overflow-hidden text-white flex-shrink-0";
@@ -1731,7 +1607,6 @@
         if (viewName === "inventaris-mutasi") loadMutasiData();
         if (viewName === "kategori-keuangan") loadKategoriKeuanganData();
         if (viewName === "kategori-inventaris") loadKategoriInventarisData();
-        if (viewName === "pengaturan") loadSettingsData();
       }
 
       // --- VIEW 1: OVERVIEW LOAD ---
@@ -1751,7 +1626,10 @@
         let criticalItemsHTML = "";
 
         barang.forEach((b) => {
-          if (Number(b.stok_sekarang || 0) <= Number(b.stok_minimum || 0)) {
+          if (
+            b &&
+            Number(b.stok_sekarang || 0) <= Number(b.stok_minimum || 0)
+          ) {
             criticalItemsCount++;
             criticalItemsHTML += `
                         <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-xl">
@@ -1874,10 +1752,23 @@
         });
       }
 
-      // --- VIEW 2: BUKU KAS HARIAN ---
+      // --- VIEW 2: TRANSAKSI ---
       function loadKeuanganData() {
         const list = stateKeuangan;
         const tableBody = document.getElementById("keuangan-table-body");
+
+        if (list.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Belum ada data Transaksi kas harian.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         [...list].reverse().forEach((item) => {
           html += `
@@ -1915,7 +1806,7 @@
 
         tableRows.forEach((row) => {
           const cells = row.getElementsByTagName("td");
-          if (cells.length === 0) return;
+          if (cells.length < 5) return;
 
           const tipe = cells[1].innerText;
           const keterangan = cells[3].innerText.toLowerCase();
@@ -1934,6 +1825,19 @@
       function loadUtangPiutangData() {
         const list = stateUtangPiutang;
         const tableBody = document.getElementById("utangpiutang-table-body");
+
+        if (list.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Belum ada data Utang & Piutang yang dicatat.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         list.forEach((item) => {
           html += `
@@ -1943,7 +1847,7 @@
                             <span class="px-2 py-0.5 rounded text-xs font-bold ${item.jenis === "Utang" ? "bg-amber-100 text-amber-800" : "bg-teal-100 text-teal-800"}">${item.jenis}</span>
                         </td>
                         <td class="py-4 px-6 font-bold">${item.pihak}</td>
-                        <td class="py-4 px-6">${item.keterangan}</td>
+                        <td class="py-4 px-6">${item.keterangan || "-"}</td>
                         <td class="py-4 px-6 font-semibold">${formatRupiah(Number(item.nominal || 0))}</td>
                         <td class="py-4 px-6">
                             <span class="px-2.5 py-1 rounded text-xs font-bold ${item.status === "Lunas" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-800"}">${item.status}</span>
@@ -1972,7 +1876,7 @@
 
         rows.forEach((row) => {
           const cells = row.getElementsByTagName("td");
-          if (cells.length === 0) return;
+          if (cells.length < 6) return;
 
           const tJenis = cells[1].innerText;
           const tPihak = cells[2].innerText.toLowerCase();
@@ -1993,6 +1897,19 @@
       function loadRecurringData() {
         const list = stateRecurring;
         const tableBody = document.getElementById("recurring-table-body");
+
+        if (list.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Belum ada kontrak Kas Rutin Bulanan berulang yang aktif.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         list.forEach((item) => {
           html += `
@@ -2030,7 +1947,7 @@
 
         rows.forEach((row) => {
           const cells = row.getElementsByTagName("td");
-          if (cells.length === 0) return;
+          if (cells.length < 6) return;
 
           const tTipe = cells[0].innerText;
           const tKategori = cells[1].innerText.toLowerCase();
@@ -2096,7 +2013,6 @@
         buildA4PrintTbody(list);
       }
 
-      // Simpan 100% di Memori Client-side (Tanpa database)
       function updateResiField(index, field, value) {
         while (stateResiManual.length < 15) {
           stateResiManual.push({ nama_pelanggan: "", no_resi: "" });
@@ -2143,7 +2059,7 @@
         const list = stateResiManual;
         const canvas = document.createElement("canvas");
         canvas.width = 1200;
-        canvas.height = 2400; // Tinggi diperbesar untuk menampung 15 baris
+        canvas.height = 2400;
         const ctx = canvas.getContext("2d");
 
         ctx.fillStyle = "#ffffff";
@@ -2154,7 +2070,7 @@
         ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
 
         const rowHeight = 158;
-        const col1Width = 400; // 1/3 lebar untuk Nama
+        const col1Width = 400;
 
         ctx.lineWidth = 6;
         for (let i = 1; i < 15; i++) {
@@ -2207,13 +2123,25 @@
       function loadBarangData() {
         const list = stateBarang;
         const tableBody = document.getElementById("barang-table-body");
+
+        if (list.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Katalog master sediaan stok masih kosong.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         list.forEach((item) => {
           const isKritis =
             Number(item.stok_sekarang || 0) <= Number(item.stok_minimum || 0);
           html += `
                     <tr>
-                        <td class="py-4 px-6 font-bold font-mono">${item.id_barang}</td>
                         <td class="py-4 px-6 font-bold text-slate-800">${item.nama_barang}</td>
                         <td class="py-4 px-6">${item.kategori}</td>
                         <td class="py-4 px-6 text-center font-semibold text-slate-500">${item.stok_minimum}</td>
@@ -2247,7 +2175,7 @@
 
         rows.forEach((row) => {
           const cells = row.getElementsByTagName("td");
-          if (cells.length === 0) return;
+          if (cells.length < 6) return;
 
           const tCode = cells[0].innerText.toLowerCase();
           const tName = cells[1].innerText.toLowerCase();
@@ -2264,11 +2192,24 @@
         });
       }
 
-      // --- VIEW 7: MANAJEMEN STOK (MUTASI STOK) ---
+      // --- VIEW 7: MANAJEMEN STOK ---
       function loadMutasiData() {
         const mutasi = stateMutasi;
         const barang = stateBarang;
         const tableBody = document.getElementById("mutasi-table-body");
+
+        if (mutasi.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Belum ada riwayat aliran Manajemen Stok yang masuk atau keluar.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         mutasi.forEach((item) => {
           const bRef = barang.find((x) => x.id_barang === item.id_barang);
@@ -2289,7 +2230,7 @@
                         <td class="py-4 px-6 font-bold text-slate-800">${nameLabel}</td>
                         <td class="py-4 px-6">${tipeBadge}</td>
                         <td class="py-4 px-6 text-center font-bold">${item.jumlah}</td>
-                        <td class="py-4 px-6">${item.keterangan}</td>
+                        <td class="py-4 px-6">${item.keterangan || "-"}</td>
                         <td class="py-4 px-6 text-center text-xs text-slate-500">${item.input_by || "Sistem"}</td>
                         <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
                             <button onclick="openMutasiModal('${item.id_mutasi}')" class="text-blue-600 hover:text-blue-800 p-1">
@@ -2314,7 +2255,7 @@
 
         rows.forEach((row) => {
           const cells = row.getElementsByTagName("td");
-          if (cells.length === 0) return;
+          if (cells.length < 5) return;
 
           const tTipe = cells[2].innerText;
           const tKet = cells[4].innerText.toLowerCase();
@@ -2331,6 +2272,19 @@
       function loadKategoriKeuanganData() {
         const list = stateKatKeuangan;
         const tableBody = document.getElementById("kat-keuangan-table-body");
+
+        if (list.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Belum ada Kategori Keuangan.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         list.forEach((item) => {
           html += `
@@ -2363,10 +2317,23 @@
         });
       }
 
-      // --- VIEW 9: KATEGORI BARANG ---
+      // --- VIEW 9: KATEGORI INVENTARIS ---
       function loadKategoriInventarisData() {
         const list = stateKatInventaris;
         const tableBody = document.getElementById("kat-inventaris-table-body");
+
+        if (list.length === 0) {
+          tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="2" class="text-center py-8 text-slate-400">
+                            <i class="fa-solid fa-folder-open fa-2x mb-2 block"></i>
+                            Belum ada Kategori Barang.
+                        </td>
+                    </tr>
+                `;
+          return;
+        }
+
         let html = "";
         list.forEach((item) => {
           html += `
@@ -2396,17 +2363,6 @@
           if (val.includes(query)) row.classList.remove("hidden");
           else row.classList.add("hidden");
         });
-      }
-
-      // --- VIEW 10: SETTINGS LOAD ---
-      function loadSettingsData() {
-        const company = stateCompany;
-        document.getElementById("settings-app-name").value =
-          company.app_name || "";
-        document.getElementById("settings-app-address").value =
-          company.app_address || "";
-        document.getElementById("settings-app-logo-url").value =
-          company.app_logo_url || "";
       }
 
       // --- FORM BUILDERS ---
@@ -2511,8 +2467,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan Ringkas</label>
-                    <input type="text" id="form-up-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Sebab baki tagihan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan Ringkas (Opsional)</label>
+                    <input type="text" id="form-up-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Sebab baki tagihan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500">
                 </div>
             `;
         openModal();
@@ -2595,10 +2551,6 @@
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">ID / Kode Barang</label>
-                    <input type="text" id="form-brg-id" value="${existing ? existing.id_barang : ""}" placeholder="Contoh: BRG-101" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 uppercase" ${existing ? "readonly" : ""} required>
-                </div>
-                <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Barang Sediaan</label>
                     <input type="text" id="form-brg-nama" value="${existing ? existing.nama_barang : ""}" placeholder="Contoh: Cotton Combed 30s Black L" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
@@ -2630,7 +2582,7 @@
         document.getElementById("form-edit-id").value = id || "";
         document.getElementById("modal-title").innerText = id
           ? "Edit Catatan Aliran Stok"
-          : `Catat Aliran Stok (${forceType})`;
+          : `Catat Aliran Stok (${forceType || "Sesuaikan"})`;
 
         const existing = id
           ? stateMutasi.find((x) => x.id_mutasi === id)
@@ -2643,12 +2595,12 @@
         stateBarang.forEach((b) => {
           const sel =
             existing && existing.id_barang === b.id_barang ? "selected" : "";
-          brgOptions += `<option value="${b.id_barang}" ${sel}>${b.id_barang} - ${b.nama_barang} (Sisa: ${b.stok_sekarang})</option>`;
+          brgOptions += `<option value="${b.id_barang}" ${sel}>${b.nama_barang} (Sisa: ${b.stok_sekarang})</option>`;
         });
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tanggal Aliran</label>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tanggal Masuk/Keluar</label>
                     <input type="date" id="form-mt-tanggal" value="${existing ? existing.tanggal : new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
@@ -2659,20 +2611,19 @@
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Tipe Aliran Arus</label>
-                    <select id="form-mt-jenis" class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" ${forceType ? "disabled" : ""} required>
+                    <select id="form-mt-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                         <option value="Masuk" ${currentType === "Masuk" ? "selected" : ""}>Masuk (Penambahan Sediaan)</option>
                         <option value="Keluar" ${currentType === "Keluar" ? "selected" : ""}>Keluar (Pemakaian Sablon / Maklon)</option>
                         <option value="Rusak" ${currentType === "Rusak" ? "selected" : ""}>Rusak (Cacat Produksi / Hilang)</option>
                     </select>
-                    ${forceType ? `<input type="hidden" id="form-mt-jenis-hidden" value="${forceType}">` : ""}
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Kuantitas Jumlah</label>
                     <input type="number" id="form-mt-jumlah" value="${existing ? existing.jumlah : ""}" placeholder="Contoh: 10" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Deskripsi / Projek</label>
-                    <input type="text" id="form-mt-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Contoh: Pembuatan Kaos Panitia Lari" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Deskripsi / Projek (Opsional)</label>
+                    <input type="text" id="form-mt-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Contoh: Pembuatan Kaos Panitia Lari" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500">
                 </div>
             `;
         openModal();
@@ -2791,9 +2742,8 @@
             document.getElementById("form-up-nominal").value,
           );
           const statusVal = document.getElementById("form-up-status").value;
-          const ketVal = document
-            .getElementById("form-up-keterangan")
-            .value.trim();
+          const ketVal =
+            document.getElementById("form-up-keterangan").value.trim() || "-";
 
           executeOptimisticAction(
             "utang_piutang",
@@ -2929,16 +2879,12 @@
           );
         } else if (actionType === "mutasi") {
           const itemID = document.getElementById("form-mt-barang").value;
-          const hiddenTipe = document.getElementById("form-mt-jenis-hidden");
-          const tipeVal = hiddenTipe
-            ? hiddenTipe.value
-            : document.getElementById("form-mt-jenis").value;
+          const tipeVal = document.getElementById("form-mt-jenis").value;
           const jumlahVal = parseInt(
             document.getElementById("form-mt-jumlah").value,
           );
-          const ketVal = document
-            .getElementById("form-mt-keterangan")
-            .value.trim();
+          const ketVal =
+            document.getElementById("form-mt-keterangan").value.trim() || "-";
           const dateVal = document.getElementById("form-mt-tanggal").value;
 
           executeOptimisticAction(
@@ -3072,7 +3018,7 @@
                 loadKategoriInventarisData();
               populateCategoryFilters();
             },
-            "Kategori barang diperbarui!",
+            "Kategori sediaan barang diperbarui!",
           );
         }
       }
@@ -3270,30 +3216,6 @@
         });
       }
 
-      function saveCompanySettings(event) {
-        event.preventDefault();
-        const config = {
-          app_name: document.getElementById("settings-app-name").value.trim(),
-          app_address: document
-            .getElementById("settings-app-address")
-            .value.trim(),
-          app_logo_url: document
-            .getElementById("settings-app-logo-url")
-            .value.trim(),
-        };
-
-        executeOptimisticAction(
-          "company",
-          () => {
-            stateCompany = config;
-          },
-          () => {
-            startApp();
-          },
-          "Konfigurasi toko berhasil diperbarui!",
-        );
-      }
-
       // --- WINDOW ONLOAD INITIALIZER ---
       window.onload = function () {
         const hasValidUrl =
@@ -3315,7 +3237,6 @@
             document.getElementById("warning-bar-text").innerText =
               "Sistem berjalan di mode produksi Google Server.";
           }
-          // Ambil data payload murni secara transparan
           fetchDataAndStart();
         } else {
           document
@@ -3408,11 +3329,6 @@
                 input_by: "Administrator",
               },
             ],
-            company: {
-              app_name: "ZCP Store & Screenprint",
-              app_address: "Mojokerto, Jawa Timur",
-              app_logo_url: "",
-            },
           };
 
           syncInMemoryState(dummyPayload);
