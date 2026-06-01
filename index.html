@@ -43,7 +43,7 @@
           padding: 10mm;
           box-sizing: border-box;
         }
-        /* Desain Grid Kotak Potong Hitam Tebal Sesuai Gambar Sketsa */
+        /* Desain Grid Kotak Potong Hitam Tebal Sesuai Gambar Sketsa (15 Baris) */
         .print-grid-table {
           width: 100%;
           height: 275mm; /* Mengisi tinggi printable area kertas A4 */
@@ -51,13 +51,13 @@
           table-layout: fixed;
         }
         .print-grid-table tr {
-          height: 27.5mm; /* Membagi rata tinggi kertas untuk 10 baris */
+          height: 18.33mm; /* Membagi rata tinggi kertas untuk 15 baris */
         }
         .print-grid-table td {
           border: 3px solid #000000 !important;
-          padding: 8px 12px !important;
+          padding: 6px 12px !important;
           font-family: "Courier New", Courier, monospace !important;
-          font-size: 20px !important;
+          font-size: 16px !important;
           font-weight: 900 !important;
           text-transform: uppercase !important;
           vertical-align: middle !important;
@@ -101,89 +101,8 @@
       >
     </div>
 
-    <!-- SKRIN LOG MASUK -->
-    <div
-      id="login-screen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 px-4"
-    >
-      <div
-        class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100 text-center"
-      >
-        <!-- LOGO DINAMIK -->
-        <div
-          id="login-logo-container"
-          class="inline-flex p-3 bg-blue-100 text-blue-600 rounded-xl mb-3 h-16 w-16 items-center justify-center overflow-hidden"
-        >
-          <i class="fa-solid fa-shirt fa-2x"></i>
-        </div>
-        <h1 class="text-2xl font-bold text-slate-900" id="login-app-name">
-          Gas Sablon App
-        </h1>
-        <p class="text-slate-500 text-sm mt-1 mb-8">
-          Sistem Manajemen Keuangan & Inventaris
-        </p>
-
-        <form id="login-form" onsubmit="handleLogin(event)">
-          <div class="mb-4 text-left">
-            <label
-              class="block text-slate-700 text-sm font-semibold mb-2"
-              for="username"
-              >Nama Pengguna</label
-            >
-            <div class="relative">
-              <span
-                class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
-              >
-                <i class="fa-solid fa-user"></i>
-              </span>
-              <input
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                id="username"
-                type="text"
-                placeholder="Masukkan nama pengguna"
-                required
-                autocomplete="username"
-              />
-            </div>
-          </div>
-          <div class="mb-6 text-left">
-            <label
-              class="block text-slate-700 text-sm font-semibold mb-2"
-              for="password"
-              >Kata Sandi</label
-            >
-            <div class="relative">
-              <span
-                class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
-              >
-                <i class="fa-solid fa-lock"></i>
-              </span>
-              <input
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                required
-                autocomplete="current-password"
-              />
-            </div>
-          </div>
-          <button
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-200 text-sm flex items-center justify-center gap-2"
-            type="submit"
-          >
-            <span>Masuk Aplikasi</span>
-            <i class="fa-solid fa-right-to-bracket"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-
     <!-- UTAMA SISTEM WRAPPER -->
-    <div
-      id="main-app"
-      class="hidden flex flex-col md:flex-row min-h-screen flex-1"
-    >
+    <div id="main-app" class="flex flex-col md:flex-row min-h-screen flex-1">
       <!-- NAVIGASI SIDEBAR -->
       <aside
         id="sidebar"
@@ -206,9 +125,7 @@
               >
                 Gas Sablon
               </h2>
-              <span class="text-xs text-slate-400" id="user-display-role"
-                >Admin</span
-              >
+              <span class="text-xs text-slate-400">Sistem Kas & Stok</span>
             </div>
           </div>
           <button
@@ -229,24 +146,24 @@
             <span>Ringkasan Dashboard</span>
           </button>
 
-          <!-- Seksyen Aliran Kas -->
-          <div class="pt-4 pb-1 admin-only">
+          <!-- Kelompok Menu Keuangan -->
+          <div class="pt-4 pb-1">
             <span
               class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
-              >Keuangan</span
+              >Modul Keuangan</span
             >
           </div>
           <button
             onclick="switchView('keuangan-transaksi')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="keuangan-transaksi"
           >
             <i class="fa-solid fa-wallet w-5"></i>
-            <span>Catatan Kas (Harian)</span>
+            <span>Buku Kas Harian</span>
           </button>
           <button
             onclick="switchView('keuangan-utangpiutang')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="keuangan-utangpiutang"
           >
             <i class="fa-solid fa-hand-holding-dollar w-5"></i>
@@ -254,35 +171,36 @@
           </button>
           <button
             onclick="switchView('keuangan-recurring')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="keuangan-recurring"
           >
             <i class="fa-solid fa-repeat w-5"></i>
-            <span>Kas Tetap (Berulang)</span>
+            <span>Kas Rutin Bulanan</span>
           </button>
 
-          <!-- Seksyen Operasi & Cetak Label -->
+          <!-- Kelompok Menu Operasional -->
           <div class="pt-4 pb-1">
             <span
               class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
-              >Operasional & Produksi</span
+              >Modul Operasional</span
             >
           </div>
-          <!-- MENU UTAMA: RESI MANUAL A4 -->
           <button
             onclick="switchView('cetak-resi')"
             class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="cetak-resi"
           >
             <i class="fa-solid fa-file-invoice w-5"></i>
-            <span class="font-bold text-amber-400">Label Nama & Resi (A4)</span>
+            <span class="font-bold text-amber-400"
+              >Cetak Label Alamat (A4)</span
+            >
           </button>
 
-          <!-- Seksyen Inventori -->
+          <!-- Kelompok Menu Inventoris -->
           <div class="pt-4 pb-1">
             <span
               class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
-              >Inventoris</span
+              >Modul Inventaris</span
             >
           </div>
           <button
@@ -291,7 +209,7 @@
             data-view="inventaris-katalog"
           >
             <i class="fa-solid fa-boxes-stacked w-5"></i>
-            <span>Katalog Master</span>
+            <span>Data Stok</span>
           </button>
           <button
             onclick="switchView('inventaris-mutasi')"
@@ -299,35 +217,35 @@
             data-view="inventaris-mutasi"
           >
             <i class="fa-solid fa-right-left w-5"></i>
-            <span>Mutasi Stok</span>
+            <span>Manajemen Stok</span>
           </button>
 
-          <!-- Kategori Dinamik Seksyen -->
-          <div class="pt-4 pb-1 admin-only">
+          <!-- Kelompok Pengaturan Kategori -->
+          <div class="pt-4 pb-1">
             <span
               class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
-              >Kategori Dinamik</span
+              >Kategori Dinamis</span
             >
           </div>
           <button
             onclick="switchView('kategori-keuangan')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="kategori-keuangan"
           >
             <i class="fa-solid fa-tags w-5"></i>
-            <span>Kategori Keuangan</span>
+            <span>Kategori Aliran Kas</span>
           </button>
           <button
             onclick="switchView('kategori-inventaris')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="kategori-inventaris"
           >
             <i class="fa-solid fa-folder-open w-5"></i>
-            <span>Kategori Inventoris</span>
+            <span>Kategori Barang</span>
           </button>
 
-          <!-- Tetapan Seksyen -->
-          <div class="pt-4 pb-1 admin-only">
+          <!-- Kelompok Pengaturan Sistem -->
+          <div class="pt-4 pb-1">
             <span
               class="px-4 text-xs font-semibold text-slate-500 tracking-wider uppercase"
               >Sistem</span
@@ -335,7 +253,7 @@
           </div>
           <button
             onclick="switchView('pengaturan')"
-            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white admin-only"
+            class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition duration-150 hover:bg-slate-800 hover:text-white"
             data-view="pengaturan"
           >
             <i class="fa-solid fa-gears w-5"></i>
@@ -343,39 +261,25 @@
           </button>
         </nav>
 
-        <!-- Profil Pengguna Sesi -->
+        <!-- Profil Sesi Pengguna -->
         <div
-          class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col gap-2"
+          class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col gap-1"
         >
           <div class="flex items-center gap-3">
             <div
               class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold"
-              id="user-avatar"
             >
-              A
+              U
             </div>
             <div class="flex-1 min-w-0">
-              <p
-                class="text-sm font-semibold text-white truncate"
-                id="user-display-name"
-              >
-                Admin Sablon
+              <p class="text-sm font-semibold text-white truncate">
+                Pengguna Sistem
               </p>
-              <p
-                class="text-xs text-slate-500 truncate"
-                id="user-display-username"
-              >
-                @admin
+              <p class="text-xs text-emerald-400 truncate">
+                ● Aktif Tanpa Login
               </p>
             </div>
           </div>
-          <button
-            onclick="handleLogout()"
-            class="w-full mt-2 bg-slate-800 hover:bg-red-900 hover:text-white text-slate-400 text-xs py-2 px-3 rounded-lg transition duration-150 flex items-center justify-center gap-2"
-          >
-            <i class="fa-solid fa-power-off"></i>
-            <span>Log Keluar</span>
-          </button>
         </div>
       </aside>
 
@@ -386,7 +290,7 @@
         class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 md:hidden"
       ></div>
 
-      <!-- KAWASAN KANDUNGAN UTAMA -->
+      <!-- AREA KANDUNGAN UTAMA -->
       <main class="flex-1 flex flex-col h-screen overflow-y-auto">
         <!-- Mobile Header Bar -->
         <header
@@ -409,12 +313,6 @@
               >Gas Sablon</span
             >
           </div>
-          <div
-            class="text-xs px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full font-semibold"
-            id="header-user-role"
-          >
-            Admin
-          </div>
         </header>
 
         <!-- KAWASAN PANEL KANDUNGAN -->
@@ -426,11 +324,11 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Ringkasan Operasi Bengkel
+                  Ringkasan Operasi Toko
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5" id="overview-welcome">
-                  Pantau aliran tunai kewangan dan sediaan bahan mentah sablon
-                  anda.
+                  Pantau kinerja keuangan, arus barang, dan sediaan stok Anda
+                  secara langsung.
                 </p>
               </div>
               <div
@@ -455,7 +353,7 @@
                     <p
                       class="text-blue-100 text-xs font-semibold tracking-wider uppercase"
                     >
-                      Untung Bersih
+                      Laba / Rugi Bersih
                     </p>
                     <h3 class="text-2xl font-black mt-2" id="stat-laba-bersih">
                       Rp 0
@@ -469,7 +367,7 @@
                   class="mt-4 flex items-center gap-2 text-xs text-blue-100 bg-white/5 p-2 rounded-lg"
                 >
                   <span class="font-bold" id="stat-cashflow-status"
-                    >Aliran kas sihat</span
+                    >Aliran kas sehat</span
                   >
                 </div>
               </div>
@@ -482,7 +380,7 @@
                     <p
                       class="text-slate-400 text-xs font-semibold tracking-wider uppercase"
                     >
-                      Jumlah Penerimaan
+                      Total Pemasukan
                     </p>
                     <h3
                       class="text-2xl font-bold text-slate-800 mt-2"
@@ -496,7 +394,7 @@
                   </span>
                 </div>
                 <div class="mt-4 text-xs text-emerald-600">
-                  Berdasarkan rekod aliran tunai masuk.
+                  Berdasarkan total buku kas masuk.
                 </div>
               </div>
 
@@ -508,7 +406,7 @@
                     <p
                       class="text-slate-400 text-xs font-semibold tracking-wider uppercase"
                     >
-                      Jumlah Perbelanjaan
+                      Total Pengeluaran
                     </p>
                     <h3
                       class="text-2xl font-bold text-slate-800 mt-2"
@@ -522,7 +420,7 @@
                   </span>
                 </div>
                 <div class="mt-4 text-xs text-rose-600">
-                  Termasuk perbelanjaan tetap berulang.
+                  Termasuk biaya pengeluaran bulanan.
                 </div>
               </div>
 
@@ -534,7 +432,7 @@
                     <p
                       class="text-slate-400 text-xs font-semibold tracking-wider uppercase"
                     >
-                      Bahan Mentah Kritikal
+                      Stok Hampir Habis
                     </p>
                     <h3
                       class="text-2xl font-bold text-slate-800 mt-2"
@@ -554,7 +452,7 @@
                   class="mt-4 text-xs text-amber-600 font-medium"
                   id="stat-stok-kritis-desc"
                 >
-                  Sediaan selamat di atas stok minimum.
+                  Sediaan aman di atas batas minimum.
                 </div>
               </div>
             </div>
@@ -566,7 +464,7 @@
               >
                 <div class="flex items-center justify-between mb-4">
                   <h4 class="font-bold text-slate-800">
-                    Carta Trend Kas Bulanan
+                    Grafik Trend Arus Kas Bulanan
                   </h4>
                   <span class="text-xs text-slate-400">Tahun 2026</span>
                 </div>
@@ -580,10 +478,11 @@
               >
                 <div class="mb-4">
                   <h4 class="font-bold text-slate-800">
-                    Sediaan Stok Kritikal
+                    Peringatan Stok Tipis
                   </h4>
                   <p class="text-xs text-slate-400">
-                    Sila hubungi pembekal jika stok menyentuh had minimum.
+                    Daftar sediaan barang yang sudah menyentuh batas minimum
+                    aman.
                   </p>
                 </div>
                 <div
@@ -594,7 +493,7 @@
                     <i
                       class="fa-solid fa-circle-check text-emerald-500 fa-2x mb-2 block"
                     ></i>
-                    Semua sediaan selamat.
+                    Semua sediaan aman & terpenuhi.
                   </div>
                 </div>
               </div>
@@ -608,11 +507,11 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Catatan Keuangan Harian
+                  Buku Kas Harian
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Rekod semua urus niaga modal, pembelian bahan sablon, utiliti
-                  bengkel, mahupun pendapatan maklon sablon.
+                  Mencatat seluruh pemasukan dari transaksi penjualan/maklon,
+                  serta pengeluaran belanja bahan produksi.
                 </p>
               </div>
               <button
@@ -620,7 +519,7 @@
                 class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
               >
                 <i class="fa-solid fa-plus"></i>
-                <span>Rekod Aliran Kas Baru</span>
+                <span>Catat Transaksi Baru</span>
               </button>
             </div>
 
@@ -648,8 +547,8 @@
                   class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
                 >
                   <option value="Semua">Semua Jenis</option>
-                  <option value="Pemasukan">Penerimaan (+)</option>
-                  <option value="Pengeluaran">Perbelanjaan (-)</option>
+                  <option value="Pemasukan">Pemasukan (+)</option>
+                  <option value="Pengeluaran">Pengeluaran (-)</option>
                 </select>
               </div>
             </div>
@@ -663,13 +562,13 @@
                     class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
                   >
                     <tr>
-                      <th class="py-4 px-6">Tarikh</th>
+                      <th class="py-4 px-6">Tanggal</th>
                       <th class="py-4 px-6">Jenis</th>
                       <th class="py-4 px-6">Kategori</th>
                       <th class="py-4 px-6">Keterangan</th>
                       <th class="py-4 px-6">Nominal</th>
                       <th class="py-4 px-6 text-center">Petugas</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -691,11 +590,11 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Urusan Hutang & Piutang
+                  Catatan Utang & Piutang
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Pantau baki hutang bahan mentah kepada pembekal dan baki
-                  piutang/deposit daripada pelanggan.
+                  Pantau utang belanja bahan baku ke supplier atau piutang sisa
+                  pembayaran dari pelanggan.
                 </p>
               </div>
               <button
@@ -703,8 +602,47 @@
                 class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
               >
                 <i class="fa-solid fa-plus"></i>
-                <span>Catat Hutang / Piutang</span>
+                <span>Catat Utang / Piutang</span>
               </button>
+            </div>
+
+            <!-- SEARCH & FILTER UTANG/PIUTANG -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterUtangPiutangTable()"
+                  id="search-utangpiutang"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari pihak terkait / keterangan..."
+                />
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <select
+                  onchange="filterUtangPiutangTable()"
+                  id="filter-jenis-up"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <option value="Semua">Semua Jenis</option>
+                  <option value="Utang">Utang</option>
+                  <option value="Piutang">Piutang</option>
+                </select>
+                <select
+                  onchange="filterUtangPiutangTable()"
+                  id="filter-status-up"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <option value="Semua">Semua Status</option>
+                  <option value="Belum Lunas">Belum Lunas</option>
+                  <option value="Lunas">Lunas</option>
+                </select>
+              </div>
             </div>
 
             <div
@@ -716,13 +654,13 @@
                     class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
                   >
                     <tr>
-                      <th class="py-4 px-6">Tarikh</th>
+                      <th class="py-4 px-6">Tanggal</th>
                       <th class="py-4 px-6">Jenis</th>
-                      <th class="py-4 px-6">Pihak Berkenaan</th>
+                      <th class="py-4 px-6">Pihak Terkait</th>
                       <th class="py-4 px-6">Keterangan</th>
                       <th class="py-4 px-6">Jumlah</th>
                       <th class="py-4 px-6">Status</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -741,11 +679,11 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Penerimaan & Perbelanjaan Berulang (Recurring)
+                  Kas Rutin Bulanan (Berulang)
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Daftarkan kontrak pembayaran tetap bulanan seperti sewa
-                  bengkel, ansuran mesin, atau bil internet workshop.
+                  Kelola tagihan berulang secara periodik otomatis, seperti sewa
+                  internet workshop, listrik harian, atau cicilan alat.
                 </p>
               </div>
               <button
@@ -753,8 +691,38 @@
                 class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
               >
                 <i class="fa-solid fa-plus"></i>
-                <span>Daftar Kontrak Berulang</span>
+                <span>Daftar Transaksi Rutin</span>
               </button>
+            </div>
+
+            <!-- SEARCH & FILTER RECURRING -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterRecurringTable()"
+                  id="search-recurring"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari keterangan / kategori..."
+                />
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <select
+                  onchange="filterRecurringTable()"
+                  id="filter-tipe-rc"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <option value="Semua">Semua Aliran</option>
+                  <option value="Pemasukan">Pemasukan (+)</option>
+                  <option value="Pengeluaran">Pengeluaran (-)</option>
+                </select>
+              </div>
             </div>
 
             <div
@@ -770,9 +738,9 @@
                       <th class="py-4 px-6">Kategori</th>
                       <th class="py-4 px-6">Keterangan</th>
                       <th class="py-4 px-6">Jumlah</th>
-                      <th class="py-4 px-6">Kerapuhan (Frekuensi)</th>
+                      <th class="py-4 px-6">Frekuensi</th>
                       <th class="py-4 px-6">Status</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -791,11 +759,12 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Pencetakan Label Tempel (Kertas A4)
+                  Cetak Label Alamat (Kertas A4)
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Kelola lembaran label pengiriman/produksi. Input langsung di
-                  bawah untuk mempercepat pengerjaan tanpa pop-up.
+                  Kelola stiker pengiriman paket. Ketik langsung pada kolom
+                  baris di bawah untuk menyimpan perubahan secara instan (100%
+                  Client-Side).
                 </p>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -813,7 +782,7 @@
                   class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs py-2.5 px-4 rounded-xl flex items-center gap-2 transition shadow-md"
                 >
                   <i class="fa-solid fa-download"></i>
-                  <span>Unduh Gambar Sheet (A4)</span>
+                  <span>Unduh Lembar Gambar (A4)</span>
                 </button>
                 <!-- TOMBOL CETAK SELURUHNYA (1 BATCH INSTAN A4) -->
                 <button
@@ -821,12 +790,12 @@
                   class="bg-slate-900 hover:bg-slate-950 text-white font-extrabold text-xs py-2.5 px-5 rounded-xl flex items-center gap-2 transition shadow-md"
                 >
                   <i class="fa-solid fa-print"></i>
-                  <span>Cetak Kertas A4 (10 Baris)</span>
+                  <span>Cetak Kertas A4 (15 Baris)</span>
                 </button>
               </div>
             </div>
 
-            <!-- SIMULASI LEMBAR KERJA A4 (10 BARIS GRID) PADA SCREEN -->
+            <!-- SIMULASI LEMBAR KERJA A4 (15 BARIS GRID) PADA SCREEN -->
             <div
               class="bg-white rounded-2xl border border-slate-200 shadow-md p-6 max-w-4xl mx-auto"
             >
@@ -843,7 +812,7 @@
                 <span
                   class="bg-blue-100 text-blue-800 font-bold px-2.5 py-1 rounded-full text-[10px]"
                   id="screen-sheet-counter"
-                  >0 / 10 Terisi</span
+                  >0 / 15 Terisi</span
                 >
               </div>
 
@@ -858,14 +827,16 @@
                   <div class="col-span-4 py-3 border-r-4 border-slate-900">
                     NAMA (LEBAR 1/3)
                   </div>
-                  <div class="col-span-7 py-3">RESI (LEBAR 2/3)</div>
+                  <div class="col-span-7 py-3">
+                    RESI / DETAIL ALAMAT (LEBAR 2/3)
+                  </div>
                 </div>
 
                 <div
                   class="divide-y-4 divide-slate-900"
                   id="screen-resi-grid-body"
                 >
-                  <!-- Generated secara dinamis tepat 10 baris input langsung oleh JavaScript -->
+                  <!-- Generated secara dinamis tepat 15 baris input langsung oleh JavaScript -->
                 </div>
               </div>
             </div>
@@ -877,12 +848,10 @@
               class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <div>
-                <h1 class="text-2xl font-bold text-slate-900">
-                  Katalog Induk Inventori
-                </h1>
+                <h1 class="text-2xl font-bold text-slate-900">Data Stok</h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Urus maklumat kain (Combed/Carded), sediaan warna dakwat, dan
-                  alatan sablon.
+                  Kelola daftar sediaan kain polos, warna cat/tinta sablon, dan
+                  aksesoris konveksi.
                 </p>
               </div>
               <button
@@ -892,6 +861,43 @@
                 <i class="fa-solid fa-plus"></i>
                 <span>Daftar Barang Baru</span>
               </button>
+            </div>
+
+            <!-- SEARCH & FILTER STOK -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterBarangTable()"
+                  id="search-barang"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari nama barang / kode..."
+                />
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <select
+                  onchange="filterBarangTable()"
+                  id="filter-kat-barang"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <!-- Dinamis -->
+                </select>
+                <select
+                  onchange="filterBarangTable()"
+                  id="filter-status-barang"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <option value="Semua">Semua Sediaan</option>
+                  <option value="Stok Tipis">Stok Tipis</option>
+                  <option value="Stok Aman">Stok Aman</option>
+                </select>
+              </div>
             </div>
 
             <div
@@ -906,10 +912,10 @@
                       <th class="py-4 px-6">ID Barang</th>
                       <th class="py-4 px-6">Nama Sediaan</th>
                       <th class="py-4 px-6">Kategori</th>
-                      <th class="py-4 px-6 text-center">Had Minimum</th>
-                      <th class="py-4 px-6 text-center">Stok Semasa</th>
+                      <th class="py-4 px-6 text-center">Stok Minimum</th>
+                      <th class="py-4 px-6 text-center">Stok Saat Ini</th>
                       <th class="py-4 px-6">Status Sediaan</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -921,27 +927,67 @@
             </div>
           </div>
 
-          <!-- VIEW 7: MUTASI STOK -->
+          <!-- VIEW 7: MUTASI STOK (MANAJEMEN STOK) -->
           <div id="view-inventaris-mutasi" class="view-panel space-y-6 hidden">
             <div
               class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Rekod Aliran Mutasi Stok
+                  Manajemen Stok
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Catat rekod stok masuk (pembekal), stok keluar (proses
-                  produksi), atau stok rosak (cacat cetakan).
+                  Catat riwayat sediaan barang masuk ataupun keluar serta
+                  kerusakan secara teratur.
                 </p>
               </div>
-              <button
-                onclick="openMutasiModal()"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition self-start"
-              >
-                <i class="fa-solid fa-right-left"></i>
-                <span>Catat Mutasi Stok</span>
-              </button>
+              <div class="flex gap-2">
+                <button
+                  onclick="openMutasiModalDirect('Masuk')"
+                  class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition"
+                >
+                  <i class="fa-solid fa-circle-plus"></i>
+                  <span>Tambah Stok (+)</span>
+                </button>
+                <button
+                  onclick="openMutasiModalDirect('Keluar')"
+                  class="bg-rose-600 hover:bg-rose-700 text-white font-medium text-sm py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm transition"
+                >
+                  <i class="fa-solid fa-circle-minus"></i>
+                  <span>Kurangi Stok (-)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- SEARCH & FILTER MANAJEMEN STOK -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterMutasiTable()"
+                  id="search-mutasi"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari keterangan / nama projek..."
+                />
+              </div>
+              <div class="flex gap-2 w-full md:w-auto">
+                <select
+                  onchange="filterMutasiTable()"
+                  id="filter-jenis-mutasi"
+                  class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-40"
+                >
+                  <option value="Semua">Semua Arus</option>
+                  <option value="Masuk">Masuk (Tambah)</option>
+                  <option value="Keluar">Keluar (Kurang)</option>
+                  <option value="Rusak">Rusak / Cacat</option>
+                </select>
+              </div>
             </div>
 
             <div
@@ -953,13 +999,13 @@
                     class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
                   >
                     <tr>
-                      <th class="py-4 px-6">Tarikh</th>
+                      <th class="py-4 px-6">Tanggal</th>
                       <th class="py-4 px-6">Barang</th>
-                      <th class="py-4 px-6">Jenis Aliran</th>
-                      <th class="py-4 px-6 text-center">Kuantiti</th>
-                      <th class="py-4 px-6">Sebab / Projek</th>
+                      <th class="py-4 px-6">Tipe Arus</th>
+                      <th class="py-4 px-6 text-center">Kuantitas</th>
+                      <th class="py-4 px-6">Deskripsi / Projek</th>
                       <th class="py-4 px-6 text-center">Petugas</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -978,11 +1024,11 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Pengurusan Kategori Kewangan
+                  Kategori Aliran Kas
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Urus senarai kategori kemasukan/pengeluaran dinamik untuk
-                  dropdown form.
+                  Buat klasifikasi akun buku kas dinamis untuk memudahkan
+                  pelacakan pembukuan.
                 </p>
               </div>
               <button
@@ -992,6 +1038,25 @@
                 <i class="fa-solid fa-plus"></i>
                 <span>Tambah Kategori Baru</span>
               </button>
+            </div>
+
+            <!-- SEARCH KATEGORI KEUANGAN -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterKatKeuTable()"
+                  id="search-katkeu"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari nama kategori..."
+                />
+              </div>
             </div>
 
             <div
@@ -1004,8 +1069,8 @@
                   >
                     <tr>
                       <th class="py-4 px-6">Nama Kategori</th>
-                      <th class="py-4 px-6">Default Aliran</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6">Sifat Bawaan</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -1027,11 +1092,11 @@
             >
               <div>
                 <h1 class="text-2xl font-bold text-slate-900">
-                  Pengurusan Kategori Inventori
+                  Kategori Barang
                 </h1>
                 <p class="text-slate-500 text-sm mt-0.5">
-                  Klasifikasikan barangan bengkel anda (Bahan Mentah, Alatan
-                  Sablon, Pembungkusan).
+                  Klasifikasikan persediaan sediaan workshop (Bahan Baku Kaos,
+                  Tinta Sablon, Perlengkapan Paket).
                 </p>
               </div>
               <button
@@ -1043,6 +1108,25 @@
               </button>
             </div>
 
+            <!-- SEARCH KATEGORI BARANG -->
+            <div
+              class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-4 items-center"
+            >
+              <div class="relative flex-1 w-full">
+                <span
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input
+                  onkeyup="filterKatBarangTable()"
+                  id="search-katbarang"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Cari nama kategori barang..."
+                />
+              </div>
+            </div>
+
             <div
               class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
             >
@@ -1052,8 +1136,8 @@
                     class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-bold uppercase tracking-wider"
                   >
                     <tr>
-                      <th class="py-4 px-6">Nama Kategori Inventori</th>
-                      <th class="py-4 px-6 text-right">Tindakan</th>
+                      <th class="py-4 px-6">Nama Kategori Barang</th>
+                      <th class="py-4 px-6 text-right font-semibold">Aksi</th>
                     </tr>
                   </thead>
                   <tbody
@@ -1066,17 +1150,14 @@
           </div>
 
           <!-- VIEW 10: TETAPAN (ADMIN ONLY) -->
-          <div
-            id="view-pengaturan"
-            class="view-panel space-y-6 hidden admin-only"
-          >
+          <div id="view-pengaturan" class="view-panel space-y-6 hidden">
             <div>
               <h1 class="text-2xl font-bold text-slate-900">
-                Konfigurasi Pengaturan Aplikasi
+                Pengaturan Aplikasi
               </h1>
               <p class="text-slate-500 text-sm mt-0.5">
-                Suaikan identiti bengkel, letakkan kustom logo, dan tukar kata
-                lauuan pengguna sistem.
+                Suaikan profil identitas konveksi, kustomisasi logo, dan kontrol
+                struktur spreadsheet terhubung.
               </p>
             </div>
 
@@ -1085,9 +1166,11 @@
               <div
                 class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
               >
-                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                <h3
+                  class="font-bold text-slate-800 flex items-center gap-2 text-base"
+                >
                   <i class="fa-solid fa-store text-blue-600"></i>
-                  Profil Studio Konveksi
+                  Identitas Profil Toko
                 </h3>
                 <form
                   id="settings-company-form"
@@ -1097,7 +1180,7 @@
                   <div>
                     <label
                       class="block text-slate-700 text-xs font-semibold mb-1"
-                      >Nama Studio / Bengkel</label
+                      >Nama Toko / Studio</label
                     >
                     <input
                       id="settings-app-name"
@@ -1109,7 +1192,7 @@
                   <div>
                     <label
                       class="block text-slate-700 text-xs font-semibold mb-1"
-                      >Alamat Fizikal Bengkel</label
+                      >Alamat Fisik Toko</label
                     >
                     <textarea
                       id="settings-app-address"
@@ -1120,7 +1203,7 @@
                   <div>
                     <label
                       class="block text-slate-700 text-xs font-semibold mb-1"
-                      >URL Gambar Logo Aplikasi (Kustom Logo)</label
+                      >URL Gambar Logo (Direct URL)</label
                     >
                     <input
                       id="settings-app-logo-url"
@@ -1129,88 +1212,45 @@
                       placeholder="https://domain.com/logo.png"
                     />
                     <p class="text-[10px] text-slate-400 mt-1">
-                      Biarkan kosong jika ingin menggunakan logo default sistem.
+                      Biarkan kosong jika ingin menggunakan ikon baju sablon
+                      standar bawaan sistem.
                     </p>
                   </div>
                   <button
                     type="submit"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-lg transition"
                   >
-                    Simpan Perubahan
+                    Simpan Identitas
                   </button>
                 </form>
               </div>
 
-              <!-- Kelola Kredensial User -->
+              <!-- Panel Manual Perbaikan Database -->
               <div
-                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between"
               >
-                <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                  <i class="fa-solid fa-user-lock text-blue-600"></i>
-                  Tukar Kata Laluan
-                </h3>
-
-                <div class="space-y-4">
-                  <!-- Update Admin -->
-                  <div
-                    class="p-4 bg-slate-50 rounded-xl border border-slate-100"
+                <div>
+                  <h3
+                    class="font-bold text-slate-800 flex items-center gap-2 text-base"
                   >
-                    <h4
-                      class="font-bold text-xs text-slate-700 mb-2 uppercase tracking-wide"
-                    >
-                      Akaun Administrator
-                    </h4>
-                    <form
-                      onsubmit="updateUserCredentials(event, 'admin')"
-                      class="grid grid-cols-2 gap-3"
-                    >
-                      <div class="col-span-2">
-                        <label
-                          class="block text-slate-600 text-[10px] font-semibold mb-1"
-                          >Nama Penuh</label
-                        >
-                        <input
-                          id="cred-admin-nama"
-                          type="text"
-                          class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label
-                          class="block text-slate-600 text-[10px] font-semibold mb-1"
-                          >Nama Pengguna</label
-                        >
-                        <input
-                          id="cred-admin-user"
-                          type="text"
-                          class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs"
-                          readonly
-                        />
-                      </div>
-                      <div>
-                        <label
-                          class="block text-slate-600 text-[10px] font-semibold mb-1"
-                          >Kata Laluan Baru</label
-                        >
-                        <input
-                          id="cred-admin-pass"
-                          type="password"
-                          placeholder="Min. 4 Karakter"
-                          class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                          required
-                        />
-                      </div>
-                      <div class="col-span-2 text-right">
-                        <button
-                          type="submit"
-                          class="bg-slate-800 hover:bg-blue-700 text-white font-semibold text-[10px] py-1.5 px-3 rounded-lg transition"
-                        >
-                          Simpan Kredensial Admin
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                    <i class="fa-solid fa-database text-blue-600"></i>
+                    Integritas Database Google Sheets
+                  </h3>
+                  <p class="text-sm text-slate-500 mt-2 leading-relaxed">
+                    Jika Anda secara tidak sengaja menghapus tab/sheet pada
+                    Google Sheets, gunakan tombol di bawah untuk membuat ulang
+                    struktur tabel kosong secara otomatis tanpa merusak data
+                    lain yang ada.
+                  </p>
+                </div>
+                <div class="pt-4 border-t border-slate-100">
+                  <button
+                    onclick="triggerSetupDatabase()"
+                    class="w-full bg-slate-900 hover:bg-slate-950 text-white font-semibold text-xs py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
+                  >
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span>Setup / Reset Struktur Tabel Wajib</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1223,7 +1263,7 @@
     <div id="a4-print-area" class="hidden printable-area bg-white text-black">
       <table class="print-grid-table">
         <tbody id="print-grid-tbody">
-          <!-- Tepat 10 baris diisi secara dinamis oleh JavaScript -->
+          <!-- Tepat 15 baris diisi secara dinamis oleh JavaScript -->
         </tbody>
       </table>
     </div>
@@ -1241,7 +1281,7 @@
           class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between"
         >
           <h3 id="modal-title" class="font-bold text-slate-800 text-lg">
-            Tajuk Borang
+            Formulir Data
           </h3>
           <button
             onclick="closeModal()"
@@ -1275,7 +1315,7 @@
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-4 rounded-lg transition flex items-center gap-2"
             >
               <i class="fa-solid fa-floppy-disk"></i>
-              <span>Simpan Rekod</span>
+              <span>Simpan Data</span>
             </button>
           </div>
         </form>
@@ -1287,11 +1327,10 @@
       // ==========================================
       // KONFIGURASI HOSTING NETLIFY (GAS BACKEND)
       // ==========================================
-      // MASUKKAN URL WEB APP ANDA YANG DIDAPATKAN SETELAH PROSES DEPLOY DI GOOGLE APPS SCRIPT
       const GAS_URL =
-        "https://script.google.com/macros/s/AKfycbzFg9a6iMyVV6l1RSY3cakYhsN-rZx9XATtbanigGZIzbLM_U7CyeGkE6UqK1PyjT7k/exec";
+        "https://script.google.com/macros/s/AKfycbx_OzfAJ20np9273tmatdZR7V0-ETkF4ZGLPBU-z2icdwYuC8AvqQlW02qGKuLAkICn/exec";
 
-      // --- SISTEM VARIABEL MEMORY UNTUK OPTIMISTIC STATE MUTATION ---
+      // --- SISTEM VARIABEL MEMORY ---
       let stateUsers = [];
       let stateKatKeuangan = [];
       let stateKatInventaris = [];
@@ -1301,10 +1340,14 @@
       let stateBarang = [];
       let stateMutasi = [];
       let stateCompany = {};
-      let stateResiManual = [];
+
+      // 100% Client-side untuk Resi (15 baris)
+      let stateResiManual = Array.from({ length: 15 }, () => ({
+        nama_pelanggan: "",
+        no_resi: "",
+      }));
 
       let currentView = "overview";
-      let currentUser = null;
 
       // Sinkronisasi Seluruh Data dari Database Aktif (Google Sheets)
       function syncInMemoryState(fetchedData) {
@@ -1318,11 +1361,9 @@
           stateBarang = fetchedData.barang || [];
           stateMutasi = fetchedData.mutasi || [];
           stateCompany = fetchedData.company || {};
-          stateResiManual = fetchedData.resi_manual || [];
         }
       }
 
-      // Memetakan kunci nama ke variabel state internal
       function getDataFromStateVariable(key) {
         if (key === "keuangan") return stateKeuangan;
         if (key === "utang_piutang") return stateUtangPiutang;
@@ -1331,13 +1372,10 @@
         if (key === "mutasi") return stateMutasi;
         if (key === "kat_keuangan") return stateKatKeuangan;
         if (key === "kat_inventaris") return stateKatInventaris;
-        if (key === "resi_manual") return stateResiManual;
         if (key === "company") return stateCompany;
-        if (key === "users") return stateUsers;
         return [];
       }
 
-      // Mengembalikan state ketika dibatalkan (rollback)
       function restoreStateVariable(key, previousState) {
         if (key === "keuangan") stateKeuangan = previousState || [];
         if (key === "utang_piutang") stateUtangPiutang = previousState || [];
@@ -1346,17 +1384,11 @@
         if (key === "mutasi") stateMutasi = previousState || [];
         if (key === "kat_keuangan") stateKatKeuangan = previousState || [];
         if (key === "kat_inventaris") stateKatInventaris = previousState || [];
-        if (key === "resi_manual") stateResiManual = previousState || [];
         if (key === "company") stateCompany = previousState || {};
-        if (key === "users") stateUsers = previousState || [];
       }
 
       /**
        * UNIFIED API GATEWAY WRAPPER (BRIDGE GOOGLE APPS SCRIPT)
-       * Mendukung multi-environment secara dinamis:
-       * 1. Netlify Production (HTTP POST Fetch ke GAS_URL)
-       * 2. Native Google Apps Script (Serves inside GAS iframe)
-       * 3. Local/Canvas Preview (Simulated dummy database)
        */
       async function callGAS(action, data = {}) {
         const hasValidUrl =
@@ -1365,12 +1397,11 @@
           GAS_URL.startsWith("http");
 
         if (hasValidUrl) {
-          // METODE A: Fetch API Eksternal untuk Deployment Netlify
           try {
             const response = await fetch(GAS_URL, {
               method: "POST",
               headers: {
-                "Content-Type": "text/plain", // Sederhana untuk mencegah CORS preflight OPTIONS request
+                "Content-Type": "text/plain",
               },
               body: JSON.stringify({ action, ...data }),
             });
@@ -1391,60 +1422,34 @@
           google.script &&
           google.script.run
         ) {
-          // METODE B: Native Apps Script Runner (Jika dijalankan langsung di domain Google)
           return new Promise((resolve, reject) => {
             const run = google.script.run
               .withSuccessHandler((res) => resolve(res))
               .withFailureHandler((err) => reject(err));
 
-            if (action === "login") {
-              run.loginUser(data.username, data.password);
-            } else if (action === "getPayload") {
+            if (action === "getPayload") {
               run.getSheetsPayload();
             } else if (action === "saveData") {
               run.saveDataFromClient(data.keys, data.dataValues);
+            } else if (action === "triggerSetup") {
+              run.runSetupDatabase();
             } else {
               reject(new Error("Aksi tidak didukung oleh native runner."));
             }
           });
         } else {
-          // METODE C: Simulasi Simulatif (Untuk Pratinjau Canvas Editor)
           return new Promise((resolve) => {
             setTimeout(() => {
-              if (action === "login") {
-                const foundUser = stateUsers.find(
-                  (u) =>
-                    u.username === data.username.toLowerCase() &&
-                    u.password === data.password,
-                );
-                if (foundUser) {
-                  resolve({
-                    success: true,
-                    user: {
-                      id: foundUser.id,
-                      username: foundUser.username,
-                      role: foundUser.role,
-                      nama_lengkap: foundUser.nama_lengkap,
-                    },
-                  });
-                } else {
-                  resolve({
-                    success: false,
-                    message:
-                      "Nama pengguna atau kata sandi tidak cocok! (Preview Mode)",
-                  });
-                }
-              } else if (action === "getPayload") {
+              if (action === "getPayload") {
                 resolve({ success: true, payload: null });
-              } else if (action === "saveData") {
+              } else if (action === "saveData" || action === "triggerSetup") {
                 resolve({ success: true });
               }
-            }, 800);
+            }, 500);
           });
         }
       }
 
-      // Mengecek apakah berjalan di luar Google dan URL belum dikonfigurasikan (Mode Simulasi)
       function isLocalEnvironment() {
         const hasGoogleRun =
           typeof google !== "undefined" && google.script && google.script.run;
@@ -1455,7 +1460,7 @@
         return !hasGoogleRun && !hasValidUrl;
       }
 
-      // --- SISTEM UTAMA ENGIN OPTIMISTIC CRUD & PENANGANAN GAGAL (ROLLBACK) KE GAS APPS ---
+      // --- SISTEM UTAMA ENGIN OPTIMISTIC CRUD & PENANGANAN ROLLBACK ---
       async function executeOptimisticAction(
         keyArray,
         actionFn,
@@ -1463,20 +1468,14 @@
         successMsg,
       ) {
         const keys = Array.isArray(keyArray) ? keyArray : [keyArray];
-
-        // 1. Ambil cadangan data asli sebelum dimutasi
         const backups = {};
         keys.forEach((k) => {
           backups[k] = JSON.parse(JSON.stringify(getDataFromStateVariable(k)));
         });
 
-        // 2. State Mutation Instan pada Memory
         actionFn();
-
-        // 3. Render Instan ke Layar Pengguna (Instan UX)
         renderFn();
 
-        // 4. Munculkan Toast Peringatan "Sedang diproses..."
         const toast = Swal.mixin({
           toast: true,
           position: "top-end",
@@ -1489,18 +1488,16 @@
 
         toast.fire({
           icon: "info",
-          title: "Sedang diproses...",
+          title: "Menyimpan perubahan...",
           timer: 4000,
         });
 
         try {
-          // 5. Kirim data nyata secara langsung melalui API Gateway callGAS
           await callGAS("saveData", {
             keys: keys,
             dataValues: keys.map((k) => getDataFromStateVariable(k)),
           });
 
-          // Tampilkan Toast Sukses
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -1511,23 +1508,20 @@
             timerProgressBar: true,
           });
         } catch (err) {
-          // 6. GAGAL: Lakukan Rollback mengembalikan data lama ke memory
           keys.forEach((k) => {
             restoreStateVariable(k, backups[k]);
           });
 
-          // Render Ulang Layar dengan Data Asli yang Dipulihkan
           renderFn();
 
-          // Tampilkan Toast Gagal & Rollback
           Swal.fire({
             toast: true,
             position: "top-end",
             icon: "error",
-            title: "Gagal diproses!",
+            title: "Gagal menyimpan!",
             text:
               err.message ||
-              "Gangguan koneksi Google Sheets backend. Perubahan dibatalkan.",
+              "Gangguan koneksi Google Sheets. Perubahan dibatalkan.",
             showConfirmButton: false,
             timer: 3500,
             timerProgressBar: true,
@@ -1535,7 +1529,6 @@
         }
       }
 
-      // --- Rupiah Currency Formatting ---
       function formatRupiah(angka) {
         if (angka === undefined || angka === null) return "Rp 0";
         const isNegative = angka < 0;
@@ -1546,66 +1539,49 @@
         return (isNegative ? "-Rp " : "Rp ") + rupiah;
       }
 
-      // --- AUTHENTICATION (REVISI PRODUKSI: MEMBUAT REQUEST NYATA KE BACKEND) ---
-      function handleLogin(event) {
-        event.preventDefault();
-        const userIn = document.getElementById("username").value.trim();
-        const passIn = document.getElementById("password").value;
+      // --- BRANDING CONTROLLER ---
+      function applyCustomBranding() {
+        const company = stateCompany;
+        const appName = company.app_name || "Gas Sablon App";
+        document.getElementById("sidebar-app-name").innerText = appName;
+        document.getElementById("header-app-name").innerText = appName;
 
-        // Cari tombol submit untuk memicu loading state
-        const submitBtn = event.target.querySelector('button[type="submit"]');
-        const originalBtnContent = submitBtn.innerHTML;
+        const logoInSidebar = document.getElementById("sidebar-logo-container");
+        const logoInHeader = document.getElementById("header-logo-container");
+        const defaultMiniHanger = `<i class="fa-solid fa-shirt"></i>`;
 
-        // Masuk ke Loading State (Tombol Terkunci)
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Memverifikasi...</span>`;
+        if (company.app_logo_url && company.app_logo_url.trim() !== "") {
+          logoInSidebar.className =
+            "h-10 w-10 rounded-lg flex items-center justify-center overflow-hidden bg-transparent flex-shrink-0 border border-slate-700/50";
+          logoInHeader.className =
+            "h-8 w-8 rounded-md flex items-center justify-center overflow-hidden bg-transparent flex-shrink-0 border border-slate-200";
 
-        // Hubungi API Gateway (code.gs)
-        callGAS("login", { username: userIn, password: passIn })
-          .then(function (response) {
-            // Mengembalikan tombol ke keadaan semula
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnContent;
-
-            if (response.success) {
-              currentUser = response.user;
-              sessionStorage.setItem(
-                "gas_session",
-                JSON.stringify(currentUser),
-              );
-              document.getElementById("login-screen").classList.add("hidden");
-              document.getElementById("main-app").classList.remove("hidden");
-
-              // Sukses login: Ambil payload Google Sheets utuh untuk memulai dashboard
-              fetchDataAndStart();
-            } else {
-              // Tampilkan feedback penolakan spesifik dari backend
-              Swal.fire({
-                icon: "error",
-                title: "Gagal Masuk",
-                text: response.message,
-                confirmButtonColor: "#3b82f6",
-              });
-            }
-          })
-          .catch(function (err) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnContent;
-            Swal.fire({
-              icon: "error",
-              title: "Kegagalan Koneksi",
-              text: "Gagal mengirimkan data ke Google Drive: " + err.message,
-              confirmButtonColor: "#ef4444",
-            });
-          });
+          logoInSidebar.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="resetLogoToDefault(this)">`;
+          logoInHeader.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="resetLogoToDefault(this)">`;
+        } else {
+          logoInSidebar.className =
+            "h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center overflow-hidden text-white flex-shrink-0";
+          logoInHeader.className =
+            "h-8 w-8 bg-blue-600 rounded-md flex items-center justify-center overflow-hidden text-white flex-shrink-0";
+          logoInSidebar.innerHTML = defaultMiniHanger;
+          logoInHeader.innerHTML = defaultMiniHanger;
+        }
       }
 
-      // Mengunduh seluruh sisa lembar tabel setelah login berhasil
+      function resetLogoToDefault(imgElement) {
+        const defaultMiniHanger = `<i class="fa-solid fa-shirt"></i>`;
+        const parent = imgElement.parentElement;
+        parent.className =
+          "h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center overflow-hidden text-white flex-shrink-0";
+        parent.innerHTML = defaultMiniHanger;
+      }
+
+      // --- DATA RETRIEVAL ---
       function fetchDataAndStart() {
         if (!isLocalEnvironment()) {
           Swal.fire({
             title: "Memuat Data...",
-            text: "Mengunduh tabel inventaris & kas terbaru.",
+            text: "Menghubungkan ke database Google Sheets.",
             allowOutsideClick: false,
             didOpen: () => {
               Swal.showLoading();
@@ -1630,20 +1606,35 @@
         }
       }
 
-      function handleLogout() {
+      function triggerSetupDatabase() {
         Swal.fire({
-          title: "Apakah Anda yakin ingin keluar?",
+          title: "Perbaiki Struktur database?",
+          text: "Sistem akan memastikan seluruh tabel wajib tersedia di Google Sheet.",
           icon: "question",
           showCancelButton: true,
-          confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
-          confirmButtonText: "Ya, Keluar!",
+          confirmButtonColor: "#3b82f6",
+          confirmButtonText: "Ya, Jalankan Setup",
         }).then((result) => {
           if (result.isConfirmed) {
-            sessionStorage.removeItem("gas_session");
-            currentUser = null;
-            document.getElementById("login-screen").classList.remove("hidden");
-            document.getElementById("main-app").classList.add("hidden");
+            Swal.fire({
+              title: "Memproses...",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+            callGAS("triggerSetup")
+              .then(() => {
+                Swal.fire(
+                  "Sukses",
+                  "Struktur tabel berhasil diperbaiki.",
+                  "success",
+                );
+                fetchDataAndStart();
+              })
+              .catch((err) => {
+                Swal.fire("Gagal", err.message, "error");
+              });
           }
         });
       }
@@ -1660,52 +1651,12 @@
         }
       }
 
-      // --- BOOTSTRAP APP ---
+      // --- INITIAL START ---
       let cashflowChart = null;
 
-      // Konfigurasi visual saat aplikasi pertama kali berjalan
       function startApp() {
-        if (!currentUser) {
-          document.getElementById("login-screen").classList.remove("hidden");
-          document.getElementById("main-app").classList.add("hidden");
-          return;
-        }
-
-        const company = stateCompany;
-        document.getElementById("login-app-name").innerText =
-          company.app_name || "Gas Sablon App";
-        document.getElementById("sidebar-app-name").innerText =
-          company.app_name || "Gas Sablon";
-        document.getElementById("header-app-name").innerText =
-          company.app_name || "Gas Sablon";
-
-        const logoInLogin = document.getElementById("login-logo-container");
-        const logoInSidebar = document.getElementById("sidebar-logo-container");
-        const logoInHeader = document.getElementById("header-logo-container");
-
-        const defaultHanger = `<i class="fa-solid fa-shirt fa-2x"></i>`;
-        const defaultMiniHanger = `<i class="fa-solid fa-shirt"></i>`;
-
-        if (company.app_logo_url && company.app_logo_url.trim() !== "") {
-          logoInLogin.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="this.outerHTML='${defaultHanger}'">`;
-          logoInSidebar.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="this.outerHTML='${defaultMiniHanger}'">`;
-          logoInHeader.innerHTML = `<img src="${company.app_logo_url}" class="h-full w-full object-cover" onerror="this.outerHTML='${defaultMiniHanger}'">`;
-        } else {
-          logoInLogin.innerHTML = defaultHanger;
-          logoInSidebar.innerHTML = defaultMiniHanger;
-          logoInHeader.innerHTML = defaultMiniHanger;
-        }
-
-        document.getElementById("user-display-name").innerText =
-          currentUser.nama_lengkap;
-        document.getElementById("user-display-username").innerText =
-          "@" + currentUser.username;
-        document.getElementById("user-display-role").innerText =
-          currentUser.role;
-        document.getElementById("header-user-role").innerText =
-          currentUser.role;
-        document.getElementById("user-avatar").innerText =
-          currentUser.nama_lengkap.charAt(0).toUpperCase();
+        applyCustomBranding();
+        populateCategoryFilters();
 
         const d = new Date();
         const months = [
@@ -1725,47 +1676,20 @@
         document.getElementById("current-date-display").innerText =
           `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 
-        // Hak akses Staff dibatasi ketat
-        const adminElements = document.querySelectorAll(".admin-only");
-        if (currentUser.role === "Staff") {
-          adminElements.forEach((el) => el.classList.add("hidden"));
+        switchView("overview");
+      }
 
-          document.querySelectorAll(".nav-btn").forEach((btn) => {
-            const view = btn.getAttribute("data-view");
-            if (
-              ![
-                "cetak-resi",
-                "inventaris-katalog",
-                "inventaris-mutasi",
-              ].includes(view)
-            ) {
-              btn.classList.add("hidden");
-            } else {
-              btn.classList.remove("hidden");
-            }
-          });
-
-          switchView("cetak-resi");
-        } else {
-          adminElements.forEach((el) => el.classList.remove("hidden"));
-          document.querySelectorAll(".nav-btn").forEach((btn) => {
-            btn.classList.remove("hidden");
-          });
-          switchView("overview");
-        }
+      function populateCategoryFilters() {
+        // Dropdown filter untuk Barang
+        const filterKat = document.getElementById("filter-kat-barang");
+        let html = '<option value="Semua">Semua Kategori</option>';
+        stateKatInventaris.forEach((k) => {
+          html += `<option value="${k.nama_kategori}">${k.nama_kategori}</option>`;
+        });
+        filterKat.innerHTML = html;
       }
 
       function switchView(viewName) {
-        if (currentUser && currentUser.role === "Staff") {
-          if (
-            !["cetak-resi", "inventaris-katalog", "inventaris-mutasi"].includes(
-              viewName,
-            )
-          ) {
-            viewName = "cetak-resi";
-          }
-        }
-
         currentView = viewName;
         const panels = document.querySelectorAll(".view-panel");
         panels.forEach((p) => p.classList.add("hidden"));
@@ -1810,7 +1734,7 @@
         if (viewName === "pengaturan") loadSettingsData();
       }
 
-      // --- DATA LOADERS ---
+      // --- VIEW 1: OVERVIEW LOAD ---
       function loadOverviewData() {
         const keuangan = stateKeuangan;
         const barang = stateBarang;
@@ -1833,9 +1757,9 @@
                         <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-xl">
                             <div>
                                 <h5 class="font-semibold text-slate-800 text-sm">${b.nama_barang}</h5>
-                                <span class="text-xs text-red-600 font-medium">Sediaan: ${b.stok_sekarang} (Min: ${b.stok_minimum})</span>
+                                <span class="text-xs text-red-600 font-medium">Stok: ${b.stok_sekarang} (Min: ${b.stok_minimum})</span>
                             </div>
-                            <span class="px-2 py-1 bg-red-100 text-red-800 text-[10px] font-bold rounded-lg uppercase">Kritikal</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-800 text-[10px] font-bold rounded-lg uppercase font-mono">Tipis</span>
                         </div>
                     `;
           }
@@ -1854,19 +1778,19 @@
         const alertDesc = document.getElementById("stat-stok-kritis-desc");
         if (criticalItemsCount > 0) {
           alertIconBg.className = "p-3 bg-rose-50 text-rose-600 rounded-xl";
-          alertDesc.innerText = "Stok sediaan di bawah had minimum.";
+          alertDesc.innerText = "Beberapa barang menyentuh batas aman.";
           alertDesc.className = "mt-4 text-xs text-rose-600 font-semibold";
           document.getElementById("kritis-list-container").innerHTML =
             criticalItemsHTML;
         } else {
           alertIconBg.className =
             "p-3 bg-emerald-50 text-emerald-600 rounded-xl";
-          alertDesc.innerText = "Semua sediaan selamat.";
+          alertDesc.innerText = "Semua sediaan aman.";
           alertDesc.className = "mt-4 text-xs text-emerald-600 font-medium";
           document.getElementById("kritis-list-container").innerHTML = `
                     <div class="text-center py-8 text-slate-400 text-sm">
                         <i class="fa-solid fa-circle-check text-emerald-500 fa-2x mb-2 block"></i>
-                        Semua sediaan selamat.
+                        Semua sediaan aman & terpenuhi.
                     </div>
                 `;
         }
@@ -1913,13 +1837,13 @@
             labels: monthsNames,
             datasets: [
               {
-                label: "Penerimaan",
+                label: "Pemasukan",
                 data: monthlyIn,
                 backgroundColor: "#10b981",
                 borderRadius: 6,
               },
               {
-                label: "Perbelanjaan",
+                label: "Pengeluaran",
                 data: monthlyOut,
                 backgroundColor: "#f43f5e",
                 borderRadius: 6,
@@ -1950,6 +1874,7 @@
         });
       }
 
+      // --- VIEW 2: BUKU KAS HARIAN ---
       function loadKeuanganData() {
         const list = stateKeuangan;
         const tableBody = document.getElementById("keuangan-table-body");
@@ -1964,9 +1889,12 @@
                         <td class="py-4 px-6">${item.kategori}</td>
                         <td class="py-4 px-6 font-medium">${item.keterangan}</td>
                         <td class="py-4 px-6 font-bold">${formatRupiah(Number(item.nominal || 0))}</td>
-                        <td class="py-4 px-6 text-center text-xs">${item.input_by}</td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteKeuangan('${item.id}')" class="text-rose-600 hover:text-rose-800">
+                        <td class="py-4 px-6 text-center text-xs">${item.input_by || "Sistem"}</td>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openKeuanganModal('${item.id}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteKeuangan('${item.id}')" class="text-rose-600 hover:text-rose-800 p-1">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
@@ -2002,6 +1930,7 @@
         });
       }
 
+      // --- VIEW 3: UTANG & PIUTANG ---
       function loadUtangPiutangData() {
         const list = stateUtangPiutang;
         const tableBody = document.getElementById("utangpiutang-table-body");
@@ -2017,10 +1946,15 @@
                         <td class="py-4 px-6">${item.keterangan}</td>
                         <td class="py-4 px-6 font-semibold">${formatRupiah(Number(item.nominal || 0))}</td>
                         <td class="py-4 px-6">
-                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.status === "Lunas" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-800"}">${item.status}</span>
+                            <span class="px-2.5 py-1 rounded text-xs font-bold ${item.status === "Lunas" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-800"}">${item.status}</span>
                         </td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteUtangPiutang('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openUtangPiutangModal('${item.id}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteUtangPiutang('${item.id}')" class="text-rose-600 hover:text-rose-800 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -2028,6 +1962,34 @@
         tableBody.innerHTML = html;
       }
 
+      function filterUtangPiutangTable() {
+        const query = document
+          .getElementById("search-utangpiutang")
+          .value.toLowerCase();
+        const jenis = document.getElementById("filter-jenis-up").value;
+        const status = document.getElementById("filter-status-up").value;
+        const rows = document.querySelectorAll("#utangpiutang-table-body tr");
+
+        rows.forEach((row) => {
+          const cells = row.getElementsByTagName("td");
+          if (cells.length === 0) return;
+
+          const tJenis = cells[1].innerText;
+          const tPihak = cells[2].innerText.toLowerCase();
+          const tKet = cells[3].innerText.toLowerCase();
+          const tStatus = cells[5].innerText;
+
+          const matchQuery = tPihak.includes(query) || tKet.includes(query);
+          const matchJenis = jenis === "Semua" || tJenis === jenis;
+          const matchStatus = status === "Semua" || tStatus === status;
+
+          if (matchQuery && matchJenis && matchStatus)
+            row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      // --- VIEW 4: RECURRING TRANSACTIONS ---
       function loadRecurringData() {
         const list = stateRecurring;
         const tableBody = document.getElementById("recurring-table-body");
@@ -2035,16 +1997,23 @@
         list.forEach((item) => {
           html += `
                     <tr>
-                        <td class="py-4 px-6">${item.tipe}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${item.tipe === "Pemasukan" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}">${item.tipe}</span>
+                        </td>
                         <td class="py-4 px-6">${item.kategori}</td>
                         <td class="py-4 px-6 font-semibold">${item.keterangan}</td>
                         <td class="py-4 px-6 font-bold">${formatRupiah(Number(item.nominal || 0))}</td>
                         <td class="py-4 px-6">${item.frekuensi}</td>
                         <td class="py-4 px-6">
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">${item.status}</span>
+                            <span class="px-2.5 py-1 rounded text-xs font-bold ${item.status === "Aktif" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-800"}">${item.status}</span>
                         </td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteRecurring('${item.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openRecurringModal('${item.id}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteRecurring('${item.id}')" class="text-rose-600 hover:text-rose-800 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -2052,15 +2021,37 @@
         tableBody.innerHTML = html;
       }
 
-      // --- DIRECT RESI MANUAL GRID ---
+      function filterRecurringTable() {
+        const query = document
+          .getElementById("search-recurring")
+          .value.toLowerCase();
+        const tipe = document.getElementById("filter-tipe-rc").value;
+        const rows = document.querySelectorAll("#recurring-table-body tr");
+
+        rows.forEach((row) => {
+          const cells = row.getElementsByTagName("td");
+          if (cells.length === 0) return;
+
+          const tTipe = cells[0].innerText;
+          const tKategori = cells[1].innerText.toLowerCase();
+          const tKet = cells[2].innerText.toLowerCase();
+
+          const matchQuery = tKategori.includes(query) || tKet.includes(query);
+          const matchTipe = tipe === "Semua" || tTipe === tipe;
+
+          if (matchQuery && matchTipe) row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      // --- VIEW 5: PRINT LABEL (15 ROWS, 2 COLUMNS - 100% CLIENT-SIDE) ---
       function loadResiManualData() {
         let list = stateResiManual;
-
-        while (list.length < 10) {
+        while (list.length < 15) {
           list.push({ nama_pelanggan: "", no_resi: "" });
         }
-        if (list.length > 10) {
-          list = list.slice(0, 10);
+        if (list.length > 15) {
+          list = list.slice(0, 15);
         }
 
         const screenGrid = document.getElementById("screen-resi-grid-body");
@@ -2071,19 +2062,16 @@
             (item.nama_pelanggan || "").trim() !== "" ||
             (item.no_resi || "").trim() !== "",
         ).length;
-        counterLabel.innerText = `${filledCount} / 10 Terisi`;
+        counterLabel.innerText = `${filledCount} / 15 Terisi`;
 
         let screenHTML = "";
-
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
           const data = list[i];
           const indexDisplay = i + 1;
 
           screenHTML += `
                     <div class="grid grid-cols-12 items-center bg-white border-b-2 border-slate-900">
-                        <div class="col-span-1 py-3.5 text-center font-bold font-mono text-slate-800 bg-slate-100 border-r-4 border-slate-900 h-full flex items-center justify-center">${indexDisplay}</div>
-                        
-                        <!-- Kolom Nama Pelanggan (Lebar 1/3) -->
+                        <div class="col-span-1 py-3 text-center font-bold font-mono text-slate-800 bg-slate-100 border-r-4 border-slate-900 h-full flex items-center justify-center">${indexDisplay}</div>
                         <div class="col-span-4 p-1 border-r-4 border-slate-900 h-full flex items-center">
                             <input type="text" 
                                    value="${data.nama_pelanggan || ""}" 
@@ -2092,12 +2080,10 @@
                                    class="w-full bg-transparent px-3 py-1.5 text-sm font-black text-slate-800 uppercase tracking-wide focus:bg-blue-50 focus:outline-none rounded border border-transparent focus:border-blue-400"
                             >
                         </div>
-                        
-                        <!-- Kolom Kode/Nomor Resi (Lebar 2/3) -->
                         <div class="col-span-7 p-1 h-full flex items-center">
                             <input type="text" 
                                    value="${data.no_resi || ""}" 
-                                   placeholder="NOMOR RESI / KODE PAKET" 
+                                   placeholder="NOMOR RESI / DETAIL ALAMAT" 
                                    onchange="updateResiField(${i}, 'no_resi', this.value)" 
                                    class="w-full bg-transparent px-3 py-1.5 text-sm font-mono font-black text-indigo-700 tracking-wider uppercase focus:bg-blue-50 focus:outline-none rounded border border-transparent focus:border-blue-400"
                             >
@@ -2110,27 +2096,20 @@
         buildA4PrintTbody(list);
       }
 
+      // Simpan 100% di Memori Client-side (Tanpa database)
       function updateResiField(index, field, value) {
-        executeOptimisticAction(
-          "resi_manual",
-          () => {
-            while (stateResiManual.length < 10) {
-              stateResiManual.push({ nama_pelanggan: "", no_resi: "" });
-            }
-            stateResiManual[index][field] = value.toUpperCase();
-          },
-          () => {
-            loadResiManualData();
-          },
-          `Baris #${index + 1} disimpan!`,
-        );
+        while (stateResiManual.length < 15) {
+          stateResiManual.push({ nama_pelanggan: "", no_resi: "" });
+        }
+        stateResiManual[index][field] = value.toUpperCase();
+        loadResiManualData();
       }
 
       function buildA4PrintTbody(list) {
         const tbody = document.getElementById("print-grid-tbody");
         tbody.innerHTML = "";
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
           const data = list[i] || { nama_pelanggan: "", no_resi: "" };
           tbody.innerHTML += `
                     <tr>
@@ -2142,26 +2121,29 @@
       }
 
       function bulkDeleteAllResi() {
-        executeOptimisticAction(
-          "resi_manual",
-          () => {
-            stateResiManual = Array.from({ length: 10 }, () => ({
+        Swal.fire({
+          title: "Kosongkan lembaran?",
+          text: "Semua tulisan label saat ini akan dihapus permanen.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444",
+          confirmButtonText: "Ya, Kosongkan",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            stateResiManual = Array.from({ length: 15 }, () => ({
               nama_pelanggan: "",
               no_resi: "",
             }));
-          },
-          () => {
             loadResiManualData();
-          },
-          "Lembaran resi berhasil dikosongkan!",
-        );
+          }
+        });
       }
 
       function downloadFullSheet() {
         const list = stateResiManual;
         const canvas = document.createElement("canvas");
         canvas.width = 1200;
-        canvas.height = 1700;
+        canvas.height = 2400; // Tinggi diperbesar untuk menampung 15 baris
         const ctx = canvas.getContext("2d");
 
         ctx.fillStyle = "#ffffff";
@@ -2171,11 +2153,11 @@
         ctx.lineWidth = 10;
         ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
 
-        const rowHeight = 170;
-        const col1Width = 400; // 1/3 lebar
+        const rowHeight = 158;
+        const col1Width = 400; // 1/3 lebar untuk Nama
 
         ctx.lineWidth = 6;
-        for (let i = 1; i < 10; i++) {
+        for (let i = 1; i < 15; i++) {
           ctx.beginPath();
           ctx.moveTo(0, i * rowHeight);
           ctx.lineTo(canvas.width, i * rowHeight);
@@ -2190,7 +2172,7 @@
         ctx.fillStyle = "#000000";
         ctx.textBaseline = "middle";
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
           const data = list[i];
           if (data) {
             const nama = (data.nama_pelanggan || "").trim().toUpperCase();
@@ -2212,7 +2194,7 @@
 
         const dataUrl = canvas.toDataURL("image/png");
         const link = document.createElement("a");
-        link.download = `label-sheet-a4-${Date.now()}.png`;
+        link.download = `stiker-A4-15baris-${Date.now()}.png`;
         link.href = dataUrl;
         link.click();
       }
@@ -2221,6 +2203,7 @@
         window.print();
       }
 
+      // --- VIEW 6: DATA STOK ---
       function loadBarangData() {
         const list = stateBarang;
         const tableBody = document.getElementById("barang-table-body");
@@ -2230,18 +2213,23 @@
             Number(item.stok_sekarang || 0) <= Number(item.stok_minimum || 0);
           html += `
                     <tr>
-                        <td class="py-4 px-6 font-bold">${item.id_barang}</td>
+                        <td class="py-4 px-6 font-bold font-mono">${item.id_barang}</td>
                         <td class="py-4 px-6 font-bold text-slate-800">${item.nama_barang}</td>
                         <td class="py-4 px-6">${item.kategori}</td>
                         <td class="py-4 px-6 text-center font-semibold text-slate-500">${item.stok_minimum}</td>
-                        <td class="py-4 px-6 text-center font-bold">${item.stok_sekarang}</td>
+                        <td class="py-4 px-6 text-center font-bold text-base">${item.stok_sekarang}</td>
                         <td class="py-4 px-6">
                             <span class="px-2.5 py-1 rounded text-xs font-bold ${isKritis ? "bg-red-100 text-red-800" : "bg-emerald-100 text-emerald-800"}">
-                                ${isKritis ? "Stok Kritikal" : "Sediaan Aman"}
+                                ${isKritis ? "Stok Tipis" : "Stok Aman"}
                             </span>
                         </td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteBarang('${item.id_barang}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openBarangModal('${item.id_barang}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteBarang('${item.id_barang}')" class="text-rose-600 hover:text-rose-800 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -2249,6 +2237,34 @@
         tableBody.innerHTML = html;
       }
 
+      function filterBarangTable() {
+        const query = document
+          .getElementById("search-barang")
+          .value.toLowerCase();
+        const kategori = document.getElementById("filter-kat-barang").value;
+        const status = document.getElementById("filter-status-barang").value;
+        const rows = document.querySelectorAll("#barang-table-body tr");
+
+        rows.forEach((row) => {
+          const cells = row.getElementsByTagName("td");
+          if (cells.length === 0) return;
+
+          const tCode = cells[0].innerText.toLowerCase();
+          const tName = cells[1].innerText.toLowerCase();
+          const tKat = cells[2].innerText;
+          const tStatus = cells[5].innerText;
+
+          const matchQuery = tCode.includes(query) || tName.includes(query);
+          const matchKat = kategori === "Semua" || tKat === kategori;
+          const matchStatus = status === "Semua" || tStatus === status;
+
+          if (matchQuery && matchKat && matchStatus)
+            row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      // --- VIEW 7: MANAJEMEN STOK (MUTASI STOK) ---
       function loadMutasiData() {
         const mutasi = stateMutasi;
         const barang = stateBarang;
@@ -2257,18 +2273,31 @@
         mutasi.forEach((item) => {
           const bRef = barang.find((x) => x.id_barang === item.id_barang);
           const nameLabel = bRef ? bRef.nama_barang : "Barang Terhapus";
+
+          let tipeBadge = "";
+          if (item.jenis_mutasi === "Masuk") {
+            tipeBadge = `<span class="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 text-xs font-bold"><i class="fa-solid fa-arrow-down-long"></i> Masuk</span>`;
+          } else if (item.jenis_mutasi === "Keluar") {
+            tipeBadge = `<span class="px-2.5 py-1 rounded bg-rose-100 text-rose-800 text-xs font-bold"><i class="fa-solid fa-arrow-up-long"></i> Keluar</span>`;
+          } else {
+            tipeBadge = `<span class="px-2.5 py-1 rounded bg-amber-100 text-amber-800 text-xs font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Rusak</span>`;
+          }
+
           html += `
                     <tr>
-                        <td class="py-4 px-6">${item.tanggal}</td>
-                        <td class="py-4 px-6 font-bold">${nameLabel}</td>
-                        <td class="py-4 px-6">
-                            <span class="px-2.5 py-1 rounded text-xs font-bold ${item.jenis_mutasi === "Masuk" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"}">${item.jenis_mutasi}</span>
-                        </td>
+                        <td class="py-4 px-6 font-medium">${item.tanggal}</td>
+                        <td class="py-4 px-6 font-bold text-slate-800">${nameLabel}</td>
+                        <td class="py-4 px-6">${tipeBadge}</td>
                         <td class="py-4 px-6 text-center font-bold">${item.jumlah}</td>
                         <td class="py-4 px-6">${item.keterangan}</td>
-                        <td class="py-4 px-6 text-center text-xs">${item.input_by}</td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteMutasi('${item.id_mutasi}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-4 px-6 text-center text-xs text-slate-500">${item.input_by || "Sistem"}</td>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openMutasiModal('${item.id_mutasi}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteMutasi('${item.id_mutasi}')" class="text-rose-600 hover:text-rose-800 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -2276,6 +2305,29 @@
         tableBody.innerHTML = html;
       }
 
+      function filterMutasiTable() {
+        const query = document
+          .getElementById("search-mutasi")
+          .value.toLowerCase();
+        const tipe = document.getElementById("filter-jenis-mutasi").value;
+        const rows = document.querySelectorAll("#mutasi-table-body tr");
+
+        rows.forEach((row) => {
+          const cells = row.getElementsByTagName("td");
+          if (cells.length === 0) return;
+
+          const tTipe = cells[2].innerText;
+          const tKet = cells[4].innerText.toLowerCase();
+
+          const matchQuery = tKet.includes(query);
+          const matchTipe = tipe === "Semua" || tTipe.includes(tipe);
+
+          if (matchQuery && matchTipe) row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      // --- VIEW 8: KATEGORI KEUANGAN ---
       function loadKategoriKeuanganData() {
         const list = stateKatKeuangan;
         const tableBody = document.getElementById("kat-keuangan-table-body");
@@ -2283,10 +2335,15 @@
         list.forEach((item) => {
           html += `
                     <tr>
-                        <td class="py-4 px-6 font-bold">${item.nama_kategori}</td>
-                        <td class="py-4 px-6">${item.tipe}</td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteKategoriKeuangan('${item.id}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-4 px-6 font-bold text-slate-700">${item.nama_kategori}</td>
+                        <td class="py-4 px-6 font-semibold">${item.tipe}</td>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openKategoriKeuanganModal('${item.id}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteKategoriKeuangan('${item.id}')" class="text-rose-600 hover:text-rose-800 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -2294,6 +2351,19 @@
         tableBody.innerHTML = html;
       }
 
+      function filterKatKeuTable() {
+        const query = document
+          .getElementById("search-katkeu")
+          .value.toLowerCase();
+        const rows = document.querySelectorAll("#kat-keuangan-table-body tr");
+        rows.forEach((row) => {
+          const val = row.getElementsByTagName("td")[0].innerText.toLowerCase();
+          if (val.includes(query)) row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      // --- VIEW 9: KATEGORI BARANG ---
       function loadKategoriInventarisData() {
         const list = stateKatInventaris;
         const tableBody = document.getElementById("kat-inventaris-table-body");
@@ -2301,9 +2371,14 @@
         list.forEach((item) => {
           html += `
                     <tr>
-                        <td class="py-4 px-6 font-bold">${item.nama_kategori}</td>
-                        <td class="py-4 px-6 text-right">
-                            <button onclick="deleteKategoriInventaris('${item.id}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
+                        <td class="py-4 px-6 font-bold text-slate-700">${item.nama_kategori}</td>
+                        <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                            <button onclick="openKategoriInventarisModal('${item.id}')" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteKategoriInventaris('${item.id}')" class="text-rose-600 hover:text-rose-800 p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 `;
@@ -2311,28 +2386,30 @@
         tableBody.innerHTML = html;
       }
 
+      function filterKatBarangTable() {
+        const query = document
+          .getElementById("search-katbarang")
+          .value.toLowerCase();
+        const rows = document.querySelectorAll("#kat-inventaris-table-body tr");
+        rows.forEach((row) => {
+          const val = row.getElementsByTagName("td")[0].innerText.toLowerCase();
+          if (val.includes(query)) row.classList.remove("hidden");
+          else row.classList.add("hidden");
+        });
+      }
+
+      // --- VIEW 10: SETTINGS LOAD ---
       function loadSettingsData() {
         const company = stateCompany;
-        const users = stateUsers;
-        const admin = users.find((u) => u.role === "Admin");
-
         document.getElementById("settings-app-name").value =
           company.app_name || "";
         document.getElementById("settings-app-address").value =
           company.app_address || "";
         document.getElementById("settings-app-logo-url").value =
           company.app_logo_url || "";
-
-        if (admin) {
-          document.getElementById("cred-admin-nama").value =
-            admin.nama_lengkap || "";
-          document.getElementById("cred-admin-user").value =
-            admin.username || "";
-          document.getElementById("cred-admin-pass").value = "";
-        }
       }
 
-      // --- SUBMISSION FORMS AND MODALS ---
+      // --- FORM BUILDERS ---
       function openModal() {
         const modal = document.getElementById("global-modal");
         modal.classList.remove("hidden");
@@ -2350,100 +2427,119 @@
         }, 100);
       }
 
-      function openKeuanganModal() {
-        const categories = stateKatKeuangan;
+      // 1. Modal Buku Kas
+      function openKeuanganModal(id = null) {
         document.getElementById("form-action-type").value = "keuangan";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Sediakan Catatan Kas";
+        document.getElementById("form-edit-id").value = id || "";
+        document.getElementById("modal-title").innerText = id
+          ? "Edit Transaksi Buku Kas"
+          : "Catat Transaksi Buku Kas";
 
+        const existing = id ? stateKeuangan.find((x) => x.id === id) : null;
         let catOptions = "";
-        categories.forEach((c) => {
-          catOptions += `<option value="${c.nama_kategori}">${c.nama_kategori} (${c.tipe})</option>`;
+        stateKatKeuangan.forEach((c) => {
+          const sel =
+            existing && existing.kategori === c.nama_kategori ? "selected" : "";
+          catOptions += `<option value="${c.nama_kategori}" ${sel}>${c.nama_kategori} (${c.tipe})</option>`;
         });
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tarikh Transaksi</label>
-                    <input type="date" id="form-keuangan-tanggal" value="${new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tanggal Transaksi</label>
+                    <input type="date" id="form-keuangan-tanggal" value="${existing ? existing.tanggal : new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Kas</label>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Aliran</label>
                     <select id="form-keuangan-tipe" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
-                        <option value="Pemasukan">Penerimaan (+)</option>
-                        <option value="Pengeluaran">Perbelanjaan (-)</option>
+                        <option value="Pemasukan" ${existing && existing.tipe === "Pemasukan" ? "selected" : ""}>Pemasukan (+)</option>
+                        <option value="Pengeluaran" ${existing && existing.tipe === "Pengeluaran" ? "selected" : ""}>Pengeluaran (-)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori Transaksi</label>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori</label>
                     <select id="form-keuangan-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                         ${catOptions}
                     </select>
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Nominal (Rp)</label>
-                    <input type="number" id="form-keuangan-nominal" placeholder="Contoh: 150000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                    <input type="number" id="form-keuangan-nominal" value="${existing ? existing.nominal : ""}" placeholder="Contoh: 150000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan / Deskripsi</label>
-                    <input type="text" id="form-keuangan-keterangan" placeholder="Rincian perbelanjaan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan / Rincian</label>
+                    <input type="text" id="form-keuangan-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Rincian perbelanjaan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
             `;
         openModal();
       }
 
-      function openUtangPiutangModal() {
+      // 2. Modal Utang & Piutang
+      function openUtangPiutangModal(id = null) {
         document.getElementById("form-action-type").value = "utangpiutang";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Daftar Hutang / Piutang Baru";
+        document.getElementById("form-edit-id").value = id || "";
+        document.getElementById("modal-title").innerText = id
+          ? "Edit Kontrak Utang / Piutang"
+          : "Catat Utang / Piutang Baru";
+
+        const existing = id ? stateUtangPiutang.find((x) => x.id === id) : null;
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tarikh Kontrak</label>
-                    <input type="date" id="form-up-tanggal" value="${new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tanggal</label>
+                    <input type="date" id="form-up-tanggal" value="${existing ? existing.tanggal : new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis</label>
                     <select id="form-up-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
-                        <option value="Utang">Hutang (Tanggungan kita kepada Pembekal)</option>
-                        <option value="Piutang">Piutang (Wang kita di tangan pelanggan)</option>
+                        <option value="Utang" ${existing && existing.jenis === "Utang" ? "selected" : ""}>Utang (Tanggungan kita ke Supplier)</option>
+                        <option value="Piutang" ${existing && existing.jenis === "Piutang" ? "selected" : ""}>Piutang (Sisa tagihan kita di pelanggan)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Pihak Berkenaan</label>
-                    <input type="text" id="form-up-pihak" placeholder="Contoh: Pembekal Kain Combed" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Pihak Terkait</label>
+                    <input type="text" id="form-up-pihak" value="${existing ? existing.pihak : ""}" placeholder="Contoh: Supplier Bahan Kain Laris" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jumlah (Rp)</label>
-                    <input type="number" id="form-up-nominal" placeholder="Contoh: 1200000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jumlah Nominal (Rp)</label>
+                    <input type="number" id="form-up-nominal" value="${existing ? existing.nominal : ""}" placeholder="Contoh: 1200000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Status Pembayaran</label>
+                    <select id="form-up-status" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Belum Lunas" ${existing && existing.status === "Belum Lunas" ? "selected" : ""}>Belum Lunas</option>
+                        <option value="Lunas" ${existing && existing.status === "Lunas" ? "selected" : ""}>Lunas</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan Ringkas</label>
-                    <input type="text" id="form-up-keterangan" placeholder="Sebab baki hutang" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="form-up-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Sebab baki tagihan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
             `;
         openModal();
       }
 
-      function openRecurringModal() {
-        const categories = stateKatKeuangan;
+      // 3. Modal Recurring (Kas Rutin Bulanan)
+      function openRecurringModal(id = null) {
         document.getElementById("form-action-type").value = "recurring";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Sediakan Urusniaga Berulang";
+        document.getElementById("form-edit-id").value = id || "";
+        document.getElementById("modal-title").innerText = id
+          ? "Edit Transaksi Kas Rutin"
+          : "Tambah Transaksi Kas Rutin Baru";
 
+        const existing = id ? stateRecurring.find((x) => x.id === id) : null;
         let catOptions = "";
-        categories.forEach((c) => {
-          catOptions += `<option value="${c.nama_kategori}">${c.nama_kategori}</option>`;
+        stateKatKeuangan.forEach((c) => {
+          const sel =
+            existing && existing.kategori === c.nama_kategori ? "selected" : "";
+          catOptions += `<option value="${c.nama_kategori}" ${sel}>${c.nama_kategori}</option>`;
         });
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Aliran</label>
                     <select id="form-rc-tipe" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
-                        <option value="Pengeluaran">Perbelanjaan Tetap (-)</option>
-                        <option value="Pemasukan">Penerimaan Tetap (+)</option>
+                        <option value="Pengeluaran" ${existing && existing.tipe === "Pengeluaran" ? "selected" : ""}>Pengeluaran Bulanan (-)</option>
+                        <option value="Pemasukan" ${existing && existing.tipe === "Pemasukan" ? "selected" : ""}>Pemasukan Bulanan (+)</option>
                     </select>
                 </div>
                 <div>
@@ -2453,80 +2549,107 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jumlah (Rp)</label>
-                    <input type="number" id="form-rc-nominal" placeholder="Contoh: 300000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jumlah Nominal (Rp)</label>
+                    <input type="number" id="form-rc-nominal" value="${existing ? existing.nominal : ""}" placeholder="Contoh: 250000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Deskripsi Kontrak</label>
-                    <input type="text" id="form-rc-keterangan" placeholder="Sewa kedai bulanan" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Deskripsi Tagihan</label>
+                    <input type="text" id="form-rc-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Wifi Workshop, Listrik Bulanan, dll." class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kerapuhan (Frekuensi)</label>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Frekuensi Pembayaran</label>
                     <select id="form-rc-frekuensi" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
-                        <option value="Harian">Setiap Hari</option>
-                        <option value="Mingguan">Setiap Minggu</option>
-                        <option value="Bulanan">Setiap Bulan</option>
+                        <option value="Bulanan" ${existing && existing.frekuensi === "Bulanan" ? "selected" : ""}>Bulanan (Setiap Bulan)</option>
+                        <option value="Mingguan" ${existing && existing.frekuensi === "Mingguan" ? "selected" : ""}>Mingguan (Setiap Minggu)</option>
+                        <option value="Harian" ${existing && existing.frekuensi === "Harian" ? "selected" : ""}>Harian (Setiap Hari)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Status Tagihan</label>
+                    <select id="form-rc-status" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                        <option value="Aktif" ${existing && existing.status === "Aktif" ? "selected" : ""}>Aktif</option>
+                        <option value="Nonaktif" ${existing && existing.status === "Nonaktif" ? "selected" : ""}>Nonaktif</option>
                     </select>
                 </div>
             `;
         openModal();
       }
 
-      function openBarangModal() {
-        const categories = stateKatInventaris;
+      // 4. Modal Data Stok
+      function openBarangModal(id_barang = null) {
         document.getElementById("form-action-type").value = "barang";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Daftar Barang Master Baru";
+        document.getElementById("form-edit-id").value = id_barang || "";
+        document.getElementById("modal-title").innerText = id_barang
+          ? "Edit Sediaan Barang"
+          : "Daftar Barang Master Baru";
 
+        const existing = id_barang
+          ? stateBarang.find((x) => x.id_barang === id_barang)
+          : null;
         let catOptions = "";
-        categories.forEach((c) => {
-          catOptions += `<option value="${c.nama_kategori}">${c.nama_kategori}</option>`;
+        stateKatInventaris.forEach((c) => {
+          const sel =
+            existing && existing.kategori === c.nama_kategori ? "selected" : "";
+          catOptions += `<option value="${c.nama_kategori}" ${sel}>${c.nama_kategori}</option>`;
         });
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">ID / Kod Barang</label>
-                    <input type="text" id="form-brg-id" placeholder="Contoh: BRG-101" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 uppercase" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">ID / Kode Barang</label>
+                    <input type="text" id="form-brg-id" value="${existing ? existing.id_barang : ""}" placeholder="Contoh: BRG-101" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 uppercase" ${existing ? "readonly" : ""} required>
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Barang Sediaan</label>
-                    <input type="text" id="form-brg-nama" placeholder="Contoh: Cotton Combed 30s Red" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="form-brg-nama" value="${existing ? existing.nama_barang : ""}" placeholder="Contoh: Cotton Combed 30s Black L" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori Inventori</label>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kategori Barang</label>
                     <select id="form-brg-kategori" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                         ${catOptions}
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Had Amaran Minimum</label>
-                    <input type="number" id="form-brg-minimum" placeholder="Contoh: 15" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Stok Minimum Aman</label>
+                    <input type="number" id="form-brg-minimum" value="${existing ? existing.stok_minimum : ""}" placeholder="Contoh: 15" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Stok Fizikal Permulaan</label>
-                    <input type="number" id="form-brg-sekarang" placeholder="Contoh: 100" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="0">
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Stok Saat Ini</label>
+                    <input type="number" id="form-brg-sekarang" value="${existing ? existing.stok_sekarang : ""}" placeholder="Contoh: 100" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="0">
                 </div>
             `;
         openModal();
       }
 
-      function openMutasiModal() {
-        const listBarang = stateBarang;
+      // 5. Modal Manajemen Stok (Tambah / Kurangi langsung)
+      function openMutasiModalDirect(forceType) {
+        openMutasiModal(null, forceType);
+      }
+
+      function openMutasiModal(id = null, forceType = null) {
         document.getElementById("form-action-type").value = "mutasi";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Rekod Pergerakan Stok";
+        document.getElementById("form-edit-id").value = id || "";
+        document.getElementById("modal-title").innerText = id
+          ? "Edit Catatan Aliran Stok"
+          : `Catat Aliran Stok (${forceType})`;
+
+        const existing = id
+          ? stateMutasi.find((x) => x.id_mutasi === id)
+          : null;
+        const currentType = existing
+          ? existing.jenis_mutasi
+          : forceType || "Masuk";
 
         let brgOptions = "";
-        listBarang.forEach((b) => {
-          brgOptions += `<option value="${b.id_barang}">${b.id_barang} - ${b.nama_barang} (Baki: ${b.stok_sekarang})</option>`;
+        stateBarang.forEach((b) => {
+          const sel =
+            existing && existing.id_barang === b.id_barang ? "selected" : "";
+          brgOptions += `<option value="${b.id_barang}" ${sel}>${b.id_barang} - ${b.nama_barang} (Sisa: ${b.stok_sekarang})</option>`;
         });
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tarikh Aliran</label>
-                    <input type="date" id="form-mt-tanggal" value="${new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tanggal Aliran</label>
+                    <input type="date" id="form-mt-tanggal" value="${existing ? existing.tanggal : new Date().toISOString().split("T")[0]}" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Pilih Barang</label>
@@ -2535,266 +2658,421 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Sebab Perubahan</label>
-                    <select id="form-mt-jenis" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
-                        <option value="Masuk">Masuk (Penambahan Bekalan)</option>
-                        <option value="Keluar">Keluar (Projek Sablon)</option>
-                        <option value="Rusak">Rusak / Cacat Produksi</option>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Tipe Aliran Arus</label>
+                    <select id="form-mt-jenis" class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" ${forceType ? "disabled" : ""} required>
+                        <option value="Masuk" ${currentType === "Masuk" ? "selected" : ""}>Masuk (Penambahan Sediaan)</option>
+                        <option value="Keluar" ${currentType === "Keluar" ? "selected" : ""}>Keluar (Pemakaian Sablon / Maklon)</option>
+                        <option value="Rusak" ${currentType === "Rusak" ? "selected" : ""}>Rusak (Cacat Produksi / Hilang)</option>
                     </select>
+                    ${forceType ? `<input type="hidden" id="form-mt-jenis-hidden" value="${forceType}">` : ""}
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kuantiti Aliran</label>
-                    <input type="number" id="form-mt-jumlah" placeholder="Contoh: 10" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Kuantitas Jumlah</label>
+                    <input type="number" id="form-mt-jumlah" value="${existing ? existing.jumlah : ""}" placeholder="Contoh: 10" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required min="1">
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Keterangan / Nama Projek</label>
-                    <input type="text" id="form-mt-keterangan" placeholder="Sablon Alumni Sekolah" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Deskripsi / Projek</label>
+                    <input type="text" id="form-mt-keterangan" value="${existing ? existing.keterangan : ""}" placeholder="Contoh: Pembuatan Kaos Panitia Lari" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
             `;
         openModal();
       }
 
-      function openKategoriKeuanganModal() {
+      // 6. Modal Kategori Keuangan
+      function openKategoriKeuanganModal(id = null) {
         document.getElementById("form-action-type").value = "kategori_keuangan";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Tambah Kategori Aliran Wang";
+        document.getElementById("form-edit-id").value = id || "";
+        document.getElementById("modal-title").innerText = id
+          ? "Edit Kategori Keuangan"
+          : "Tambah Kategori Keuangan Baru";
+
+        const existing = id ? stateKatKeuangan.find((x) => x.id === id) : null;
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Kategori</label>
-                    <input type="text" id="form-katkeu-nama" placeholder="Contoh: Bahan Sablon" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="form-katkeu-nama" value="${existing ? existing.nama_kategori : ""}" placeholder="Contoh: Order Maklon Sablon" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label class="block text-slate-700 text-xs font-semibold mb-1">Jenis Default</label>
+                    <label class="block text-slate-700 text-xs font-semibold mb-1">Sifat Aliran Kas</label>
                     <select id="form-katkeu-tipe" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
-                        <option value="Pemasukan">Penerimaan (+)</option>
-                        <option value="Pengeluaran">Perbelanjaan (-)</option>
+                        <option value="Pemasukan" ${existing && existing.tipe === "Pemasukan" ? "selected" : ""}>Pemasukan (+)</option>
+                        <option value="Pengeluaran" ${existing && existing.tipe === "Pengeluaran" ? "selected" : ""}>Pengeluaran (-)</option>
                     </select>
                 </div>
             `;
         openModal();
       }
 
-      function openKategoriInventarisModal() {
+      // 7. Modal Kategori Barang
+      function openKategoriInventarisModal(id = null) {
         document.getElementById("form-action-type").value =
           "kategori_inventaris";
-        document.getElementById("form-edit-id").value = "";
-        document.getElementById("modal-title").innerText =
-          "Tambah Kategori Inventori";
+        document.getElementById("form-edit-id").value = id || "";
+        document.getElementById("modal-title").innerText = id
+          ? "Edit Kategori Barang"
+          : "Tambah Kategori Barang Baru";
+
+        const existing = id
+          ? stateKatInventaris.find((x) => x.id === id)
+          : null;
 
         document.getElementById("modal-form-fields").innerHTML = `
                 <div>
                     <label class="block text-slate-700 text-xs font-semibold mb-1">Nama Kategori Sediaan</label>
-                    <input type="text" id="form-katinv-nama" placeholder="Contoh: Dakwat Sablon" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="form-katinv-nama" value="${existing ? existing.nama_kategori : ""}" placeholder="Contoh: Bahan Baku Kaos" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
             `;
         openModal();
       }
 
-      // --- FORMS SUBMIT OPERATIONS ---
+      // --- SUBMISSION LOGICS ---
       function handleFormSubmit(event) {
         event.preventDefault();
         const actionType = document.getElementById("form-action-type").value;
+        const editId = document.getElementById("form-edit-id").value;
         closeModal();
 
         if (actionType === "keuangan") {
-          const newItem = {
-            id: "tr" + Date.now(),
-            tanggal: document.getElementById("form-keuangan-tanggal").value,
-            tipe: document.getElementById("form-keuangan-tipe").value,
-            kategori: document.getElementById("form-keuangan-kategori").value,
-            nominal: parseFloat(
-              document.getElementById("form-keuangan-nominal").value,
-            ),
-            keterangan: document
-              .getElementById("form-keuangan-keterangan")
-              .value.trim(),
-            input_by: currentUser.nama_lengkap,
-          };
+          const dateVal = document.getElementById(
+            "form-keuangan-tanggal",
+          ).value;
+          const tipeVal = document.getElementById("form-keuangan-tipe").value;
+          const katVal = document.getElementById(
+            "form-keuangan-kategori",
+          ).value;
+          const nomVal = parseFloat(
+            document.getElementById("form-keuangan-nominal").value,
+          );
+          const ketVal = document
+            .getElementById("form-keuangan-keterangan")
+            .value.trim();
 
           executeOptimisticAction(
             "keuangan",
             () => {
-              stateKeuangan.push(newItem);
+              if (editId) {
+                const idx = stateKeuangan.findIndex((x) => x.id === editId);
+                if (idx !== -1) {
+                  stateKeuangan[idx] = {
+                    ...stateKeuangan[idx],
+                    tanggal: dateVal,
+                    tipe: tipeVal,
+                    kategori: katVal,
+                    nominal: nomVal,
+                    keterangan: ketVal,
+                  };
+                }
+              } else {
+                stateKeuangan.push({
+                  id: "tr" + Date.now(),
+                  tanggal: dateVal,
+                  tipe: tipeVal,
+                  kategori: katVal,
+                  nominal: nomVal,
+                  keterangan: ketVal,
+                  input_by: "Administrator",
+                });
+              }
             },
             () => {
               if (currentView === "keuangan-transaksi") loadKeuanganData();
               loadOverviewData();
             },
-            "Catatan kas berhasil disimpan!",
+            "Pencatatan kas berhasil disimpan!",
           );
         } else if (actionType === "utangpiutang") {
-          const newItem = {
-            id: "up" + Date.now(),
-            tanggal: document.getElementById("form-up-tanggal").value,
-            jenis: document.getElementById("form-up-jenis").value,
-            pihak: document.getElementById("form-up-pihak").value.trim(),
-            nominal: parseFloat(
-              document.getElementById("form-up-nominal").value,
-            ),
-            keterangan: document
-              .getElementById("form-up-keterangan")
-              .value.trim(),
-            status: "Belum Lunas",
-            input_by: currentUser.nama_lengkap,
-          };
+          const dateVal = document.getElementById("form-up-tanggal").value;
+          const jenisVal = document.getElementById("form-up-jenis").value;
+          const pihakVal = document
+            .getElementById("form-up-pihak")
+            .value.trim();
+          const nomVal = parseFloat(
+            document.getElementById("form-up-nominal").value,
+          );
+          const statusVal = document.getElementById("form-up-status").value;
+          const ketVal = document
+            .getElementById("form-up-keterangan")
+            .value.trim();
 
           executeOptimisticAction(
             "utang_piutang",
             () => {
-              stateUtangPiutang.push(newItem);
+              if (editId) {
+                const idx = stateUtangPiutang.findIndex((x) => x.id === editId);
+                if (idx !== -1) {
+                  stateUtangPiutang[idx] = {
+                    ...stateUtangPiutang[idx],
+                    tanggal: dateVal,
+                    jenis: jenisVal,
+                    pihak: pihakVal,
+                    nominal: nomVal,
+                    status: statusVal,
+                    keterangan: ketVal,
+                  };
+                }
+              } else {
+                stateUtangPiutang.push({
+                  id: "up" + Date.now(),
+                  tanggal: dateVal,
+                  jenis: jenisVal,
+                  pihak: pihakVal,
+                  nominal: nomVal,
+                  status: statusVal,
+                  keterangan: ketVal,
+                  input_by: "Administrator",
+                });
+              }
             },
             () => {
               if (currentView === "keuangan-utangpiutang")
                 loadUtangPiutangData();
             },
-            "Catatan hutang-piutang berhasil didaftarkan!",
+            "Catatan utang-piutang berhasil diperbarui!",
           );
         } else if (actionType === "recurring") {
-          const newItem = {
-            id: "rc" + Date.now(),
-            tipe: document.getElementById("form-rc-tipe").value,
-            kategori: document.getElementById("form-rc-kategori").value,
-            nominal: parseFloat(
-              document.getElementById("form-rc-nominal").value,
-            ),
-            keterangan: document
-              .getElementById("form-rc-keterangan")
-              .value.trim(),
-            frekuensi: document.getElementById("form-rc-frekuensi").value,
-            status: "Aktif",
-            tanggal_mulai: new Date().toISOString().split("T")[0],
-            terakhir_diproses: "-",
-          };
+          const tipeVal = document.getElementById("form-rc-tipe").value;
+          const katVal = document.getElementById("form-rc-kategori").value;
+          const nomVal = parseFloat(
+            document.getElementById("form-rc-nominal").value,
+          );
+          const ketVal = document
+            .getElementById("form-rc-keterangan")
+            .value.trim();
+          const frekVal = document.getElementById("form-rc-frekuensi").value;
+          const statVal = document.getElementById("form-rc-status").value;
 
           executeOptimisticAction(
             "recurring",
             () => {
-              stateRecurring.push(newItem);
+              if (editId) {
+                const idx = stateRecurring.findIndex((x) => x.id === editId);
+                if (idx !== -1) {
+                  stateRecurring[idx] = {
+                    ...stateRecurring[idx],
+                    tipe: tipeVal,
+                    kategori: katVal,
+                    nominal: nomVal,
+                    keterangan: ketVal,
+                    frekuensi: frekVal,
+                    status: statVal,
+                  };
+                }
+              } else {
+                stateRecurring.push({
+                  id: "rc" + Date.now(),
+                  tipe: tipeVal,
+                  kategori: katVal,
+                  nominal: nomVal,
+                  keterangan: ketVal,
+                  frekuensi: frekVal,
+                  status: statVal,
+                  tanggal_mulai: new Date().toISOString().split("T")[0],
+                  terakhir_diproses: "-",
+                });
+              }
             },
             () => {
               if (currentView === "keuangan-recurring") loadRecurringData();
             },
-            "Kontrak berulang berhasil didaftarkan!",
+            "Catatan kas rutin berhasil diupdate!",
           );
         } else if (actionType === "barang") {
-          const newItem = {
-            id_barang: document
-              .getElementById("form-brg-id")
-              .value.trim()
-              .toUpperCase(),
-            nama_barang: document.getElementById("form-brg-nama").value.trim(),
-            kategori: document.getElementById("form-brg-kategori").value,
-            stok_minimum: parseInt(
-              document.getElementById("form-brg-minimum").value,
-            ),
-            stok_sekarang: parseInt(
-              document.getElementById("form-brg-sekarang").value,
-            ),
-          };
-
-          if (stateBarang.some((x) => x.id_barang === newItem.id_barang)) {
-            Swal.fire(
-              "Error",
-              "ID Barang telah digunakan di katalog!",
-              "error",
-            );
-            return;
-          }
+          const idVal = document
+            .getElementById("form-brg-id")
+            .value.trim()
+            .toUpperCase();
+          const namaVal = document.getElementById("form-brg-nama").value.trim();
+          const katVal = document.getElementById("form-brg-kategori").value;
+          const minVal = parseInt(
+            document.getElementById("form-brg-minimum").value,
+          );
+          const sekVal = parseInt(
+            document.getElementById("form-brg-sekarang").value,
+          );
 
           executeOptimisticAction(
             "barang",
             () => {
-              stateBarang.push(newItem);
+              if (editId) {
+                const idx = stateBarang.findIndex(
+                  (x) => x.id_barang === editId,
+                );
+                if (idx !== -1) {
+                  stateBarang[idx] = {
+                    ...stateBarang[idx],
+                    nama_barang: namaVal,
+                    kategori: katVal,
+                    stok_minimum: minVal,
+                    stok_sekarang: sekVal,
+                  };
+                }
+              } else {
+                if (stateBarang.some((x) => x.id_barang === idVal)) {
+                  Swal.fire("Error", "ID Barang telah terdaftar!", "error");
+                  return;
+                }
+                stateBarang.push({
+                  id_barang: idVal,
+                  nama_barang: namaVal,
+                  kategori: katVal,
+                  stok_minimum: minVal,
+                  stok_sekarang: sekVal,
+                });
+              }
             },
             () => {
               if (currentView === "inventaris-katalog") loadBarangData();
               loadOverviewData();
             },
-            "Barang master berhasil terdaftar!",
+            "Katalog master barang diperbarui!",
           );
         } else if (actionType === "mutasi") {
-          const idBarang = document.getElementById("form-mt-barang").value;
-          const jenisMutasi = document.getElementById("form-mt-jenis").value;
-          const jumlah = parseInt(
+          const itemID = document.getElementById("form-mt-barang").value;
+          const hiddenTipe = document.getElementById("form-mt-jenis-hidden");
+          const tipeVal = hiddenTipe
+            ? hiddenTipe.value
+            : document.getElementById("form-mt-jenis").value;
+          const jumlahVal = parseInt(
             document.getElementById("form-mt-jumlah").value,
           );
-
-          const newMutasi = {
-            id_mutasi: "m" + Date.now(),
-            id_barang: idBarang,
-            tanggal: document.getElementById("form-mt-tanggal").value,
-            jenis_mutasi: jenisMutasi,
-            jumlah: jumlah,
-            keterangan: document
-              .getElementById("form-mt-keterangan")
-              .value.trim(),
-            input_by: currentUser.nama_lengkap,
-          };
+          const ketVal = document
+            .getElementById("form-mt-keterangan")
+            .value.trim();
+          const dateVal = document.getElementById("form-mt-tanggal").value;
 
           executeOptimisticAction(
             ["mutasi", "barang"],
             () => {
-              const brgIdx = stateBarang.findIndex(
-                (b) => b.id_barang === idBarang,
-              );
-              if (brgIdx !== -1) {
-                if (jenisMutasi === "Masuk") {
-                  stateBarang[brgIdx].stok_sekarang =
-                    Number(stateBarang[brgIdx].stok_sekarang || 0) + jumlah;
-                } else {
-                  stateBarang[brgIdx].stok_sekarang =
-                    Number(stateBarang[brgIdx].stok_sekarang || 0) - jumlah;
+              // 1. Rollback efek mutasi lama jika melakukan EDIT
+              if (editId) {
+                const oldItem = stateMutasi.find((x) => x.id_mutasi === editId);
+                if (oldItem) {
+                  const bIdx = stateBarang.findIndex(
+                    (b) => b.id_barang === oldItem.id_barang,
+                  );
+                  if (bIdx !== -1) {
+                    if (oldItem.jenis_mutasi === "Masuk") {
+                      stateBarang[bIdx].stok_sekarang =
+                        Number(stateBarang[bIdx].stok_sekarang || 0) -
+                        oldItem.jumlah;
+                    } else {
+                      stateBarang[bIdx].stok_sekarang =
+                        Number(stateBarang[bIdx].stok_sekarang || 0) +
+                        oldItem.jumlah;
+                    }
+                  }
                 }
               }
-              stateMutasi.push(newMutasi);
+
+              // 2. Terapkan nilai baru
+              const bIdx = stateBarang.findIndex((b) => b.id_barang === itemID);
+              if (bIdx !== -1) {
+                if (tipeVal === "Masuk") {
+                  stateBarang[bIdx].stok_sekarang =
+                    Number(stateBarang[bIdx].stok_sekarang || 0) + jumlahVal;
+                } else {
+                  stateBarang[bIdx].stok_sekarang =
+                    Number(stateBarang[bIdx].stok_sekarang || 0) - jumlahVal;
+                }
+              }
+
+              if (editId) {
+                const mIdx = stateMutasi.findIndex(
+                  (x) => x.id_mutasi === editId,
+                );
+                if (mIdx !== -1) {
+                  stateMutasi[mIdx] = {
+                    ...stateMutasi[mIdx],
+                    id_barang: itemID,
+                    tanggal: dateVal,
+                    jenis_mutasi: tipeVal,
+                    jumlah: jumlahVal,
+                    keterangan: ketVal,
+                  };
+                }
+              } else {
+                stateMutasi.push({
+                  id_mutasi: "m" + Date.now(),
+                  id_barang: itemID,
+                  tanggal: dateVal,
+                  jenis_mutasi: tipeVal,
+                  jumlah: jumlahVal,
+                  keterangan: ketVal,
+                  input_by: "Administrator",
+                });
+              }
             },
             () => {
               if (currentView === "inventaris-mutasi") loadMutasiData();
               loadBarangData();
               loadOverviewData();
             },
-            "Mutasi stok berhasil direkam!",
+            "Catatan mutasi stok berhasil disimpan!",
           );
         } else if (actionType === "kategori_keuangan") {
-          const newItem = {
-            id: "k" + Date.now(),
-            nama_kategori: document
-              .getElementById("form-katkeu-nama")
-              .value.trim(),
-            tipe: document.getElementById("form-katkeu-tipe").value,
-          };
+          const namaVal = document
+            .getElementById("form-katkeu-nama")
+            .value.trim();
+          const tipeVal = document.getElementById("form-katkeu-tipe").value;
 
           executeOptimisticAction(
             "kat_keuangan",
             () => {
-              stateKatKeuangan.push(newItem);
+              if (editId) {
+                const idx = stateKatKeuangan.findIndex((x) => x.id === editId);
+                if (idx !== -1) {
+                  stateKatKeuangan[idx] = {
+                    ...stateKatKeuangan[idx],
+                    nama_kategori: namaVal,
+                    tipe: tipeVal,
+                  };
+                }
+              } else {
+                stateKatKeuangan.push({
+                  id: "k" + Date.now(),
+                  nama_kategori: namaVal,
+                  tipe: tipeVal,
+                });
+              }
             },
             () => {
               if (currentView === "kategori-keuangan")
                 loadKategoriKeuanganData();
             },
-            "Kategori aliran kas berhasil disimpan!",
+            "Kategori buku kas diperbarui!",
           );
         } else if (actionType === "kategori_inventaris") {
-          const newItem = {
-            id: "ki" + Date.now(),
-            nama_kategori: document
-              .getElementById("form-katinv-nama")
-              .value.trim(),
-          };
+          const namaVal = document
+            .getElementById("form-katinv-nama")
+            .value.trim();
 
           executeOptimisticAction(
             "kat_inventaris",
             () => {
-              stateKatInventaris.push(newItem);
+              if (editId) {
+                const idx = stateKatInventaris.findIndex(
+                  (x) => x.id === editId,
+                );
+                if (idx !== -1) {
+                  stateKatInventaris[idx] = {
+                    ...stateKatInventaris[idx],
+                    nama_kategori: namaVal,
+                  };
+                }
+              } else {
+                stateKatInventaris.push({
+                  id: "ki" + Date.now(),
+                  nama_kategori: namaVal,
+                });
+              }
             },
             () => {
               if (currentView === "kategori-inventaris")
                 loadKategoriInventarisData();
+              populateCategoryFilters();
             },
-            "Kategori sediaan berhasil terdaftar!",
+            "Kategori barang diperbarui!",
           );
         }
       }
@@ -2802,13 +3080,12 @@
       // --- DELETIONS WITH OPTIMISTIC ACTION ---
       function deleteKeuangan(id) {
         Swal.fire({
-          title: "Hapus data kas?",
+          title: "Hapus data kas harian?",
           text: "Tindakan ini tidak dapat dibatalkan!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
-          confirmButtonText: "Ya, Hapus!",
+          confirmButtonText: "Ya, Hapus",
         }).then((result) => {
           if (result.isConfirmed) {
             executeOptimisticAction(
@@ -2820,21 +3097,19 @@
                 loadKeuanganData();
                 loadOverviewData();
               },
-              "Pencatatan kas berhasil dihapus!",
+              "Catatan kas harian dihapus!",
             );
           }
         });
       }
 
-      // --- PENGHAPUSAN LAIN ---
       function deleteUtangPiutang(id) {
         Swal.fire({
           title: "Hapus data utang/piutang?",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
-          confirmButtonText: "Ya, Hapus!",
+          confirmButtonText: "Ya, Hapus",
         }).then((result) => {
           if (result.isConfirmed) {
             executeOptimisticAction(
@@ -2855,12 +3130,11 @@
 
       function deleteRecurring(id) {
         Swal.fire({
-          title: "Hapus kontrak berulang?",
+          title: "Hapus tagihan rutin ini?",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
-          confirmButtonText: "Ya, Hapus!",
+          confirmButtonText: "Ya, Hapus",
         }).then((result) => {
           if (result.isConfirmed) {
             executeOptimisticAction(
@@ -2880,11 +3154,11 @@
       function deleteBarang(idBarang) {
         Swal.fire({
           title: "Hapus sediaan barang master?",
+          text: "Hapus barang ini juga akan merusak sediaan visual dari log mutasi stok.",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
-          confirmButtonText: "Ya, Hapus!",
+          confirmButtonText: "Ya, Hapus",
         }).then((result) => {
           if (result.isConfirmed) {
             executeOptimisticAction(
@@ -2898,7 +3172,7 @@
                 loadBarangData();
                 loadOverviewData();
               },
-              "Master sediaan barang berhasil dibersihkan!",
+              "Master sediaan barang telah dibersihkan!",
             );
           }
         });
@@ -2907,11 +3181,11 @@
       function deleteMutasi(id) {
         Swal.fire({
           title: "Batalkan mutasi ini?",
+          text: "Sistem otomatis mengembalikan jumlah stok saat ini pada katalog master barang ke nilai semula.",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
-          confirmButtonText: "Ya, Batalkan!",
+          confirmButtonText: "Ya, Batalkan",
         }).then((result) => {
           if (result.isConfirmed) {
             const item = stateMutasi.find((x) => x.id_mutasi === id);
@@ -2940,21 +3214,19 @@
                   loadBarangData();
                   loadOverviewData();
                 },
-                "Transaksi mutasi berhasil dibatalkan!",
+                "Transaksi mutasi stok dibatalkan!",
               );
             }
           }
         });
       }
 
-      // Pengaturan Hapus Kategori Aliran Kas
       function deleteKategoriKeuangan(id) {
         Swal.fire({
-          title: "Hapus kategori keuangan?",
+          title: "Hapus kategori kas?",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
           confirmButtonText: "Ya",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -2972,14 +3244,12 @@
         });
       }
 
-      // Pengaturan Hapus Kategori Sediaan/Bahan
       function deleteKategoriInventaris(id) {
         Swal.fire({
-          title: "Hapus kategori sediaan?",
+          title: "Hapus kategori barang?",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#ef4444",
-          cancelButtonColor: "#64748b",
           confirmButtonText: "Ya",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -2992,6 +3262,7 @@
               },
               () => {
                 loadKategoriInventarisData();
+                populateCategoryFilters();
               },
               "Kategori sediaan berhasil dihapus!",
             );
@@ -3023,43 +3294,8 @@
         );
       }
 
-      function updateUserCredentials(event, roleKey) {
-        event.preventDefault();
-        const users = stateUsers;
-        const idx = users.findIndex((u) => u.role.toLowerCase() === roleKey);
-
-        if (idx !== -1) {
-          const nameIn = document
-            .getElementById(`cred-${roleKey}-nama`)
-            .value.trim();
-          const passIn = document.getElementById(`cred-${roleKey}-pass`).value;
-
-          if (passIn.length < 4) {
-            Swal.fire(
-              "Gagal",
-              "Sandi harus terdiri atas minimal 4 karakter!",
-              "error",
-            );
-            return;
-          }
-
-          executeOptimisticAction(
-            "users",
-            () => {
-              stateUsers[idx].nama_lengkap = nameIn;
-              stateUsers[idx].password = passIn;
-            },
-            () => {
-              startApp();
-            },
-            "Kredensial sandi administrator aman!",
-          );
-        }
-      }
-
-      // --- INITIALIZATION ---
+      // --- WINDOW ONLOAD INITIALIZER ---
       window.onload = function () {
-        // Periksa apakah berjalan di Google Apps Script asli atau memiliki URL eksternal yang diatur
         const hasValidUrl =
           GAS_URL &&
           GAS_URL !== "URL_WEB_APP_GAS_ANDA" &&
@@ -3079,25 +3315,14 @@
             document.getElementById("warning-bar-text").innerText =
               "Sistem berjalan di mode produksi Google Server.";
           }
-
-          // Periksa sesi login aktif di session storage
-          const session = sessionStorage.getItem("gas_session");
-          if (session) {
-            currentUser = JSON.parse(session);
-            document.getElementById("login-screen").classList.add("hidden");
-            document.getElementById("main-app").classList.remove("hidden");
-            fetchDataAndStart();
-          } else {
-            // AMAN MURNI: Tampilkan halaman login secara langsung tanpa melakukan pre-download payload database
-            document.getElementById("login-screen").classList.remove("hidden");
-          }
+          // Ambil data payload murni secara transparan
+          fetchDataAndStart();
         } else {
-          // Tampilkan bar peringatan lingkungan jika dibuka di luar Apps Script (Iframe Canvas Preview / Mode Demo)
           document
             .getElementById("gas-production-warning")
             .classList.remove("hidden");
 
-          // Dimuat demi simulator di dalam Canvas editor (Preview Mode)
+          // DATA DUMMY SIMULATOR LOKAL CANVAS PREVIEW
           const dummyPayload = {
             users: [
               {
@@ -3105,14 +3330,7 @@
                 username: "admin",
                 password: "admin123",
                 role: "Admin",
-                nama_lengkap: "Adi Admin (Preview Mode)",
-              },
-              {
-                id: "2",
-                username: "staff",
-                password: "staff123",
-                role: "Staff",
-                nama_lengkap: "Bayu Staff Lapangan (Preview Mode)",
+                nama_lengkap: "Adi Admin",
               },
             ],
             kat_keuangan: [
@@ -3123,7 +3341,10 @@
                 tipe: "Pengeluaran",
               },
             ],
-            kat_inventaris: [{ id: "ki1", nama_kategori: "Bahan Baku Kaos" }],
+            kat_inventaris: [
+              { id: "ki1", nama_kategori: "Bahan Baku Kaos" },
+              { id: "ki2", nama_kategori: "Tinta Sablon" },
+            ],
             keuangan: [
               {
                 id: "tr1",
@@ -3132,7 +3353,7 @@
                 nominal: 2500000,
                 kategori: "Order Sablon",
                 keterangan: "DP Order Sablon Kaos Panitia 100pcs",
-                input_by: "Adi Admin",
+                input_by: "Administrator",
               },
             ],
             utang_piutang: [
@@ -3144,7 +3365,7 @@
                 keterangan: "Sisa pelunasan pesanan bahan combed",
                 tanggal: "2026-05-22",
                 status: "Belum Lunas",
-                input_by: "Adi Admin",
+                input_by: "Administrator",
               },
             ],
             recurring: [
@@ -3168,6 +3389,13 @@
                 stok_minimum: 50,
                 stok_sekarang: 120,
               },
+              {
+                id_barang: "T001",
+                nama_barang: "Rubber Ink White Super White",
+                kategori: "Tinta Sablon",
+                stok_minimum: 10,
+                stok_sekarang: 8,
+              },
             ],
             mutasi: [
               {
@@ -3177,22 +3405,18 @@
                 jenis_mutasi: "Masuk",
                 jumlah: 120,
                 keterangan: "Stok datang dari supplier kaos",
-                input_by: "Bayu Staff",
+                input_by: "Administrator",
               },
             ],
             company: {
-              app_name: "Gas Sablon (Preview Mode)",
+              app_name: "ZCP Store & Screenprint",
               app_address: "Mojokerto, Jawa Timur",
               app_logo_url: "",
             },
-            resi_manual: Array.from({ length: 10 }, () => ({
-              nama_pelanggan: "",
-              no_resi: "",
-            })),
           };
 
           syncInMemoryState(dummyPayload);
-          document.getElementById("login-screen").classList.remove("hidden");
+          startApp();
         }
       };
     </script>
